@@ -1,37 +1,61 @@
-﻿using DiGi.Math.Classes;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace DiGi.Math
 {
     public static partial class Create
     {
-        public static Matrix Matrix(Matrix matrix)
+        public static partial class Matrix
         {
-            if (matrix == null)
+            public static Classes.Matrix Identity(int count = 3)
             {
-                return null;
+                Classes.Matrix matrix = new Classes.Matrix(new double[count, count]);
+                for (int i = 0; i < count; i++)
+                {
+                    matrix[i, i] = 1;
+                }
+
+                return matrix;
             }
 
-            if (matrix.IsSquare())
+            public static Classes.Matrix Unset(int rowCount, int columnCount)
             {
-                int count = matrix.RowCount();
+                Classes.Matrix result = new Classes.Matrix(rowCount, columnCount);
+                result.SetValues(double.MinValue);
 
-                if (count == 2)
-                {
-                    return Matrix2D(matrix);
-                }
-
-                if (count == 3)
-                {
-                    return Matrix3D(matrix);
-                }
-
-                if (count == 4)
-                {
-                    return Matrix4D(matrix);
-                }
+                return result;
             }
 
-            return new Matrix(matrix);
+            public static Classes.Matrix Scale(IEnumerable<double> values)
+            {
+                if (values == null)
+                    return null;
+
+                int count = values.Count();
+
+                Classes.Matrix matrix = Identity(count + 1);
+
+                for (int i = 0; i < count; i++)
+                {
+                    matrix[i, i] = values.ElementAt(i);
+                }
+
+                return matrix;
+            }
+
+            public static Classes.Matrix Scale(int count, double factor)
+            {
+                Classes.Matrix matrix = Identity(count + 1);
+
+                for (int i = 0; i < count; i++)
+                {
+                    matrix[i, i] = factor;
+                }
+
+                return matrix;
+            }
         }
+
+
     }
 }

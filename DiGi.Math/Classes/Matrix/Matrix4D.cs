@@ -27,22 +27,6 @@ namespace DiGi.Math.Classes
             return new Matrix4D(this);
         }
 
-        public static Matrix4D GetIdentity()
-        {
-            Matrix4D matrix4D = new Matrix4D();
-            for (int i = 0; i < 4; i++)
-            {
-                matrix4D[i, i] = 1;
-            }
-
-            return matrix4D;
-        }
-
-        public static Matrix4D GetUnset()
-        {
-            return Create.Matrix4D(GetUnset(4, 4));
-        }
-
         public static Matrix4D operator *(Matrix4D matrix4D_1, Matrix4D matrix4D_2)
         {
             if (matrix4D_1 == null || matrix4D_2 == null)
@@ -56,7 +40,7 @@ namespace DiGi.Math.Classes
                 return null;
             }
 
-            return Create.Matrix4D(matrix);
+            return Create.Matrix4D.ByMatrix(matrix);
         }
 
         public static Matrix4D operator *(Matrix4D matrix4D, double value)
@@ -72,7 +56,7 @@ namespace DiGi.Math.Classes
                 return null;
             }
 
-            return Create.Matrix4D(matrix);
+            return Create.Matrix4D.ByMatrix(matrix);
         }
 
         public static Matrix4D operator +(Matrix4D matrix4D, double value)
@@ -88,7 +72,7 @@ namespace DiGi.Math.Classes
                 return null;
             }
 
-            return Create.Matrix4D(matrix);
+            return Create.Matrix4D.ByMatrix(matrix);
         }
 
         public static Matrix4D operator +(Matrix4D matrix4D_1, Matrix4D matrix4D_2)
@@ -104,7 +88,7 @@ namespace DiGi.Math.Classes
                 return null;
             }
 
-            return Create.Matrix4D(matrix);
+            return Create.Matrix4D.ByMatrix(matrix);
         }
 
         public static Matrix4D operator -(Matrix4D matrix4D_1, Matrix4D matrix4D_2)
@@ -120,7 +104,7 @@ namespace DiGi.Math.Classes
                 return null;
             }
 
-            return Create.Matrix4D(matrix);
+            return Create.Matrix4D.ByMatrix(matrix);
         }
 
         public static Matrix4D operator -(Matrix4D matrix4D, double value)
@@ -137,12 +121,13 @@ namespace DiGi.Math.Classes
             }
 
 
-            return Create.Matrix4D(matrix);
+            return Create.Matrix4D.ByMatrix(matrix);
         }
 
+        
         public static explicit operator Matrix4D(double[,] values)
         {
-            return Create.Matrix4D(values);
+            return Create.Matrix4D.ByValues(values);
         }
     }
 }

@@ -27,17 +27,6 @@ namespace DiGi.Math.Classes
             return new Matrix2D(this);
         }
 
-        public static Matrix2D GetIdentity()
-        {
-            Matrix2D matrix2D = new Matrix2D();
-            for (int i = 0; i < 2; i++)
-            {
-                matrix2D[i, i] = 1;
-            }
-
-            return matrix2D;
-        }
-
         public static Matrix2D operator *(Matrix2D matrix2D_1, Matrix2D matrix2D_2)
         {
             if (matrix2D_1 == null || matrix2D_2 == null)
@@ -51,7 +40,7 @@ namespace DiGi.Math.Classes
                 return null;
             }
 
-            return Create.Matrix2D(matrix);
+            return Create.Matrix2D.ByMatrix(matrix);
         }
 
         public static Matrix2D operator *(Matrix2D matrix2D, double value)
@@ -67,7 +56,7 @@ namespace DiGi.Math.Classes
                 return null;
             }
 
-            return Create.Matrix2D(matrix);
+            return Create.Matrix2D.ByMatrix(matrix);
         }
 
         public static Matrix2D operator +(Matrix2D matrix2D, double value)
@@ -83,7 +72,7 @@ namespace DiGi.Math.Classes
                 return null;
             }
 
-            return Create.Matrix2D(matrix);
+            return Create.Matrix2D.ByMatrix(matrix);
         }
 
         public static Matrix2D operator +(Matrix2D matrix2D_1, Matrix2D matrix2D_2)
@@ -99,7 +88,7 @@ namespace DiGi.Math.Classes
                 return null;
             }
 
-            return Create.Matrix2D(matrix);
+            return Create.Matrix2D.ByMatrix(matrix);
         }
 
         public static Matrix2D operator -(Matrix2D matrix2D_1, Matrix2D matrix2D_2)
@@ -115,7 +104,7 @@ namespace DiGi.Math.Classes
                 return null;
             }
 
-            return Create.Matrix2D(matrix);
+            return Create.Matrix2D.ByMatrix(matrix);
         }
 
         public static Matrix2D operator -(Matrix2D matrix2D, double value)
@@ -131,12 +120,13 @@ namespace DiGi.Math.Classes
                 return null;
             }
 
-            return Create.Matrix2D(matrix);
+            return Create.Matrix2D.ByMatrix(matrix);
         }
 
+        
         public static explicit operator Matrix2D(double[,] values)
         {
-            return Create.Matrix2D(values);
+            return Create.Matrix2D.ByValues(values);
         }
     }
 }

@@ -1,55 +1,69 @@
-﻿using DiGi.Math.Classes;
-
-namespace DiGi.Math
+﻿namespace DiGi.Math
 {
     public static partial class Create
     {
-        public static Matrix3D Matrix3D(Matrix matrix)
+        public static partial class Matrix3D
         {
-            if (matrix == null)
+            public static Classes.Matrix3D ByMatrix(Classes.Matrix matrix)
             {
-                return null;
-            }
-
-            if (matrix.RowCount() != 3 || matrix.ColumnCount() != 3)
-            {
-                return null;
-            }
-
-            Matrix3D result = new Matrix3D();
-            for (int i = 0; i < 3; i++)
-            {
-                for (int j = 0; j < 3; j++)
+                if (matrix == null)
                 {
-                    result[i, j] = matrix[i, j];
+                    return null;
                 }
+
+                if (matrix.RowCount() != 3 || matrix.ColumnCount() != 3)
+                {
+                    return null;
+                }
+
+                Classes.Matrix3D result = new Classes.Matrix3D();
+                for (int i = 0; i < 3; i++)
+                {
+                    for (int j = 0; j < 3; j++)
+                    {
+                        result[i, j] = matrix[i, j];
+                    }
+                }
+
+                return result;
             }
 
-            return result;
+            public static Classes.Matrix3D ByValues(double[,] values)
+            {
+                if (values == null)
+                {
+                    return null;
+                }
+
+                if (values.GetLength(0) != 3 || values.GetLength(1) != 3)
+                {
+                    return null;
+                }
+
+                Classes.Matrix3D result = new Classes.Matrix3D();
+                for (int i = 0; i < 3; i++)
+                {
+                    for (int j = 0; j < 3; j++)
+                    {
+                        result[i, j] = values[i, j];
+                    }
+                }
+
+                return result;
+            }
+
+            public static Classes.Matrix3D Identity()
+            {
+                Classes.Matrix3D matrix3D = new Classes.Matrix3D();
+                for (int i = 0; i < 3; i++)
+                {
+                    matrix3D[i, i] = 1;
+                }
+
+                return matrix3D;
+            }
         }
 
-        public static Matrix3D Matrix3D(double[,] values)
-        {
-            if (values == null)
-            {
-                return null;
-            }
 
-            if (values.GetLength(0) != 3 || values.GetLength(1) != 3)
-            {
-                return null;
-            }
-
-            Matrix3D result = new Matrix3D();
-            for (int i = 0; i < 3; i++)
-            {
-                for (int j = 0; j < 3; j++)
-                {
-                    result[i, j] = values[i, j];
-                }
-            }
-
-            return result;
-        }
     }
 }

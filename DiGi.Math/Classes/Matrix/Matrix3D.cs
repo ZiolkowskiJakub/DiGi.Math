@@ -27,17 +27,6 @@ namespace DiGi.Math.Classes
             return new Matrix3D(this);
         }
 
-        public static Matrix3D GetIdentity()
-        {
-            Matrix3D matrix3D = new Matrix3D();
-            for (int i = 0; i < 3; i++)
-            {
-                matrix3D[i, i] = 1;
-            }
-
-            return matrix3D;
-        }
-
         public static Matrix3D operator *(Matrix3D matrix3D_1, Matrix3D matrix3D_2)
         {
             if (matrix3D_1 == null || matrix3D_2 == null)
@@ -51,7 +40,7 @@ namespace DiGi.Math.Classes
                 return null;
             }
 
-            return Create.Matrix3D(matrix);
+            return Create.Matrix3D.ByMatrix(matrix);
         }
 
         public static Matrix3D operator *(Matrix3D matrix3D, double value)
@@ -67,7 +56,7 @@ namespace DiGi.Math.Classes
                 return null;
             }
 
-            return Create.Matrix3D(matrix);
+            return Create.Matrix3D.ByMatrix(matrix);
         }
 
         public static Matrix3D operator +(Matrix3D matrix3D, double value)
@@ -83,7 +72,7 @@ namespace DiGi.Math.Classes
                 return null;
             }
 
-            return Create.Matrix3D(matrix);
+            return Create.Matrix3D.ByMatrix(matrix);
         }
 
         public static Matrix3D operator +(Matrix3D matrix3D_1, Matrix3D matrix3D_2)
@@ -99,7 +88,7 @@ namespace DiGi.Math.Classes
                 return null;
             }
 
-            return Create.Matrix3D(matrix);
+            return Create.Matrix3D.ByMatrix(matrix);
         }
 
         public static Matrix3D operator -(Matrix3D matrix3D_1, Matrix3D matrix3D_2)
@@ -115,7 +104,7 @@ namespace DiGi.Math.Classes
                 return null;
             }
 
-            return Create.Matrix3D(matrix);
+            return Create.Matrix3D.ByMatrix(matrix);
         }
 
         public static Matrix3D operator -(Matrix3D matrix3D, double value)
@@ -132,12 +121,13 @@ namespace DiGi.Math.Classes
             }
 
 
-            return Create.Matrix3D(matrix);
+            return Create.Matrix3D.ByMatrix(matrix);
         }
+
 
         public static explicit operator Matrix3D(double[,] values)
         {
-            return Create.Matrix3D(values);
+            return Create.Matrix3D.ByValues(values);
         }
     }
 }

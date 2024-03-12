@@ -1,7 +1,5 @@
 ﻿using DiGi.Math.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 
@@ -475,7 +473,7 @@ namespace DiGi.Math.Classes
             {
                 for (int j = 0; j < count_Columns; j++)
                 {
-                    values_Temp[i, j] = GetCofactor(i, j);
+                    values_Temp[i, j] = Query.MatrixCofactor(i, j);
                 }
             }
 
@@ -536,66 +534,6 @@ namespace DiGi.Math.Classes
         public Matrix Size()
         {
             return new Matrix(new double[] { values.GetLength(0), values.GetLength(1) });
-        }
-
-        public static double GetCofactor(int row, int column)
-        {
-            if ((row + column) % 2 == 1)
-            {
-                return -1;
-            }
-            else
-            {
-                return 1;
-            }
-        }
-
-        public static Matrix GetIdentity(int count = 3)
-        {
-            Matrix matrix = new Matrix(new double[count, count]);
-            for (int i = 0; i < count; i++)
-            {
-                matrix[i, i] = 1;
-            }
-
-            return matrix;
-        }
-
-        public static Matrix GetUnset(int rowCount, int columnCount)
-        {
-            Matrix result = new Matrix(rowCount, columnCount);
-            result.SetValues(double.MinValue);
-
-            return result;
-        }
-
-        public static Matrix GetScale(IEnumerable<double> values)
-        {
-            if (values == null)
-                return null;
-
-            int count = values.Count();
-
-            Matrix matrix = GetIdentity(count + 1);
-
-            for (int i = 0; i < count; i++)
-            {
-                matrix[i, i] = values.ElementAt(i);
-            }
-
-            return matrix;
-        }
-
-        public static Matrix GetScale(int count, double factor)
-        {
-            Matrix matrix = GetIdentity(count + 1);
-
-            for (int i = 0; i < count; i++)
-            {
-                matrix[i, i] = factor;
-            }
-
-            return matrix;
         }
 
         public static Matrix operator *(Matrix matrix_1, Matrix matrix_2)

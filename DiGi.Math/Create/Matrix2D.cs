@@ -1,55 +1,70 @@
-﻿using DiGi.Math.Classes;
-
-namespace DiGi.Math
+﻿namespace DiGi.Math
 {
     public static partial class Create
     {
-        public static Matrix2D Matrix2D(Matrix matrix)
+        public static partial class Matrix2D
         {
-            if (matrix == null)
+            public static Classes.Matrix2D ByMatrix(Classes.Matrix matrix)
             {
-                return null;
-            }
-
-            if (matrix.RowCount() != 2 || matrix.ColumnCount() != 2)
-            {
-                return null;
-            }
-
-            Matrix2D result = new Matrix2D();
-            for (int i = 0; i < 2; i++)
-            {
-                for (int j = 0; j < 2; j++)
+                if (matrix == null)
                 {
-                    result[i, j] = matrix[i, j];
+                    return null;
                 }
+
+                if (matrix.RowCount() != 2 || matrix.ColumnCount() != 2)
+                {
+                    return null;
+                }
+
+                Classes.Matrix2D result = new Classes.Matrix2D();
+                for (int i = 0; i < 2; i++)
+                {
+                    for (int j = 0; j < 2; j++)
+                    {
+                        result[i, j] = matrix[i, j];
+                    }
+                }
+
+                return result;
             }
 
-            return result;
+            public static Classes.Matrix2D ByValues(double[,] values)
+            {
+                if (values == null)
+                {
+                    return null;
+                }
+
+                if (values.GetLength(0) != 2 || values.GetLength(1) != 2)
+                {
+                    return null;
+                }
+
+                Classes.Matrix2D result = new Classes.Matrix2D();
+                for (int i = 0; i < 2; i++)
+                {
+                    for (int j = 0; j < 2; j++)
+                    {
+                        result[i, j] = values[i, j];
+                    }
+                }
+
+                return result;
+            }
+
+            public static Classes.Matrix2D Identity()
+            {
+                Classes.Matrix2D matrix2D = new Classes.Matrix2D();
+                for (int i = 0; i < 2; i++)
+                {
+                    matrix2D[i, i] = 1;
+                }
+
+                return matrix2D;
+            }
         }
 
-        public static Matrix2D Matrix2D(double[,] values)
-        {
-            if (values == null)
-            {
-                return null;
-            }
 
-            if (values.GetLength(0) != 2 || values.GetLength(1) != 2)
-            {
-                return null;
-            }
 
-            Matrix2D result = new Matrix2D();
-            for (int i = 0; i < 2; i++)
-            {
-                for (int j = 0; j < 2; j++)
-                {
-                    result[i, j] = values[i, j];
-                }
-            }
-
-            return result;
-        }
     }
 }
