@@ -19,7 +19,7 @@ namespace DiGi.Math.Classes
         private double b;
 
         public LinearEquation(JsonObject jsonObject)
-            :base(jsonObject)
+            : base(jsonObject)
         {
 
         }
