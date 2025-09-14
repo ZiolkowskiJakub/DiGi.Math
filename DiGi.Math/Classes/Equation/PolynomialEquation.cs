@@ -15,9 +15,9 @@ namespace DiGi.Math.Classes
     public class PolynomialEquation : SerializableObject, IEquation
     {
         [JsonInclude, JsonPropertyName("Coefficients")]
-        private double[] coefficients;
+        private readonly double[]? coefficients;
 
-        public PolynomialEquation(JsonObject jsonObject)
+        public PolynomialEquation(JsonObject? jsonObject)
             :base(jsonObject)
         {
         }
@@ -27,7 +27,7 @@ namespace DiGi.Math.Classes
         /// Initializes a new instance of the PolynomialEquation class using coefficients.
         /// </summary>
         /// <param name="coefficients">The coefficients of the polynomial equation.</param>
-        public PolynomialEquation(IEnumerable<double> coefficients)
+        public PolynomialEquation(IEnumerable<double>? coefficients)
         {
             if (coefficients == null)
             {
@@ -47,7 +47,7 @@ namespace DiGi.Math.Classes
         /// Initializes a new instance of the PolynomialEquation class using another PolynomialEquation object.
         /// </summary>
         /// <param name="polynomialEquation">The PolynomialEquation to copy from.</param>
-        public PolynomialEquation(PolynomialEquation polynomialEquation)
+        public PolynomialEquation(PolynomialEquation? polynomialEquation)
         {
             if (polynomialEquation == null || polynomialEquation.coefficients == null)
             {
@@ -67,7 +67,7 @@ namespace DiGi.Math.Classes
         /// Gets the coefficients of the polynomial equation.
         /// </summary>
         [JsonIgnore]
-        public List<double> Coefficients
+        public List<double>? Coefficients
         {
             get
             {
@@ -76,7 +76,7 @@ namespace DiGi.Math.Classes
                     return null;
                 }
 
-                List<double> result = new List<double>();
+                List<double> result = [];
                 foreach (double variable in coefficients)
                 {
                     result.Add(variable);
@@ -107,7 +107,7 @@ namespace DiGi.Math.Classes
         /// Implicitly converts a LinearEquation to a PolynomialEquation.
         /// </summary>
         /// <param name="linearEquation">The LinearEquation to convert.</param>
-        public static explicit operator PolynomialEquation(LinearEquation linearEquation)
+        public static explicit operator PolynomialEquation?(LinearEquation? linearEquation)
         {
             if (linearEquation == null)
             {
@@ -124,6 +124,11 @@ namespace DiGi.Math.Classes
         /// <returns>The result of the polynomial equation.</returns>
         public double Evaluate(double value)
         {
+            if(coefficients == null)
+            {
+                return double.NaN;
+            }
+
             int count = coefficients.Length;
 
             double result = 0;
@@ -142,19 +147,19 @@ namespace DiGi.Math.Classes
         /// </summary>
         /// <param name="values">The x values to evaluate the polynomial equation for.</param>
         /// <returns>The results of the polynomial equation.</returns>
-        public List<double> Evaluate(IEnumerable<double> values)
+        public List<double>? Evaluate(IEnumerable<double>? values)
         {
-            if (values == null)
+            if (values == null || coefficients == null)
             {
                 return null;
             }
 
-            List<double> result = null;
+            List<double>? result = null;
 
             int count = coefficients.Length;
             if (count < 5 || values.Count() < 1000)
             {
-                result = new List<double>();
+                result = [];
                 foreach (double value in values)
                 {
                     result.Add(Evaluate(value));
@@ -164,8 +169,8 @@ namespace DiGi.Math.Classes
             {
                 count = values.Count();
 
-                result = Enumerable.Repeat(double.NaN, count).ToList();
-                Parallel.For(0, count, (int i) =>
+                result = [.. Enumerable.Repeat(double.NaN, count)];
+                Parallel.For(0, count, i =>
                 {
                     result[i] = Evaluate(values.ElementAt(i));
                 });

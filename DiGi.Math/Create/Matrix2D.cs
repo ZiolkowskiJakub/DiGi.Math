@@ -4,7 +4,7 @@
     {
         public static partial class Matrix2D
         {
-            public static Classes.Matrix2D ByMatrix(Classes.Matrix matrix)
+            public static Classes.Matrix2D? ByMatrix(Classes.Matrix? matrix)
             {
                 if (matrix == null)
                 {
@@ -16,7 +16,7 @@
                     return null;
                 }
 
-                Classes.Matrix2D result = new Classes.Matrix2D();
+                Classes.Matrix2D result = new();
                 for (int i = 0; i < 2; i++)
                 {
                     for (int j = 0; j < 2; j++)
@@ -28,7 +28,7 @@
                 return result;
             }
 
-            public static Classes.Matrix2D ByValues(double[,] values)
+            public static Classes.Matrix2D? ByValues(double[,]? values)
             {
                 if (values == null)
                 {
@@ -40,7 +40,7 @@
                     return null;
                 }
 
-                Classes.Matrix2D result = new Classes.Matrix2D();
+                Classes.Matrix2D result = new();
                 for (int i = 0; i < 2; i++)
                 {
                     for (int j = 0; j < 2; j++)
@@ -54,7 +54,7 @@
 
             public static Classes.Matrix2D Identity()
             {
-                Classes.Matrix2D matrix2D = new Classes.Matrix2D();
+                Classes.Matrix2D matrix2D = new();
                 for (int i = 0; i < 2; i++)
                 {
                     matrix2D[i, i] = 1;

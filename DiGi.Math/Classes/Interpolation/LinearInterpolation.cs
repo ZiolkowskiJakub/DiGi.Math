@@ -13,9 +13,9 @@ namespace DiGi.Math.Classes
     public class LinearInterpolation : SerializableObject, IInterpolation
     {
         [JsonInclude, JsonPropertyName("Values")]
-        private List<KeyValuePair<double, double>> values;
+        private List<KeyValuePair<double, double>>? values;
 
-        public LinearInterpolation(JsonObject jsonObject)
+        public LinearInterpolation(JsonObject? jsonObject)
             :base(jsonObject)
         {
 
@@ -31,7 +31,7 @@ namespace DiGi.Math.Classes
         {
         }
 
-        public LinearInterpolation(LinearInterpolation linearInterpolation)
+        public LinearInterpolation(LinearInterpolation? linearInterpolation)
         {
             if (linearInterpolation?.values != null)
             {
@@ -42,14 +42,14 @@ namespace DiGi.Math.Classes
             }
         }
 
-        public LinearInterpolation(double[,] data)
+        public LinearInterpolation(double[,]? data)
         {
             if (data == null || data.GetLength(0) < 2 || data.GetLength(1) == 0)
             {
                 return;
             }
 
-            values = new List<KeyValuePair<double, double>>();
+            values = [];
             for (int i = 0; i < data.GetLength(1); i++)
             {
                 values.Add(new KeyValuePair<double, double>(data[0, i], data[1, i]));
@@ -104,10 +104,7 @@ namespace DiGi.Math.Classes
                 return false;
             }
 
-            if (values == null)
-            {
-                values = new List<KeyValuePair<double, double>>();
-            }
+            values ??= [];
 
             values.Add(new KeyValuePair<double, double>(x, y));
             return true;
@@ -115,7 +112,7 @@ namespace DiGi.Math.Classes
 
         public double CalculateY(double x)
         {
-            List<double> ys = CalculateYs(x, 1);
+            List<double>? ys = CalculateYs(x, 1);
             if (ys == null || ys.Count == 0)
             {
                 return double.NaN;
@@ -124,9 +121,9 @@ namespace DiGi.Math.Classes
             return ys[0];
         }
 
-        public List<double> CalculateYs(double x, int maxCount = int.MaxValue)
+        public List<double>? CalculateYs(double x, int maxCount = int.MaxValue)
         {
-            if (double.IsNaN(x) || !InRange(x))
+            if (double.IsNaN(x) || !InRange(x) || values == null)
             {
                 return null;
             }
@@ -134,7 +131,7 @@ namespace DiGi.Math.Classes
             double key = double.NaN;
             double value = double.NaN;
 
-            List<double> result = new List<double>();
+            List<double> result = [];
             foreach (KeyValuePair<double, double> keyValuePair in values)
             {
                 if (x == keyValuePair.Key)

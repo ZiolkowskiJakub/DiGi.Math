@@ -7,7 +7,7 @@ namespace DiGi.Math
 {
     public static partial class Create
     {
-        public static PolynomialEquation PolynomialEquation(IEnumerable<double> x, IEnumerable<double> y, int order = -1)
+        public static PolynomialEquation? PolynomialEquation(IEnumerable<double>? x, IEnumerable<double>? y, int order = -1)
         {
             if (x == null || y == null)
             {
@@ -31,7 +31,7 @@ namespace DiGi.Math
                 order_Temp = count - 1;
             }
 
-            Polynomial polynomial = Polynomial.Fit(x.ToArray(), y.ToArray(), order_Temp, MathNet.Numerics.LinearRegression.DirectRegressionMethod.NormalEquations);
+            Polynomial polynomial = Polynomial.Fit([.. x], [.. y], order_Temp, MathNet.Numerics.LinearRegression.DirectRegressionMethod.NormalEquations);
             return polynomial?.ToDiGi();
         }
     }

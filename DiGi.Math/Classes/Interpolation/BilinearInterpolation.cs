@@ -15,20 +15,20 @@ namespace DiGi.Math.Classes
         /// The data matrix for interpolation, in [y, x] format.
         /// </summary>
         [JsonInclude, JsonPropertyName("Values")]
-        private double[,] values;
+        private readonly double[,]? values;
 
         /// <summary>
         /// Array of row (horizontal) values.
         /// </summary>
         [JsonInclude, JsonPropertyName("XArray")]
-        private double[] xArray;
+        private readonly double[]? xArray;
 
         /// <summary>
         /// Array of column (vertical) values.
         /// </summary>
         [JsonInclude, JsonPropertyName("YArray")]
-        private double[] yArray;
-        public BilinearInterpolation(JsonObject jsonObject)
+        private readonly double[]? yArray;
+        public BilinearInterpolation(JsonObject? jsonObject)
             : base(jsonObject)
         {
 
@@ -38,7 +38,7 @@ namespace DiGi.Math.Classes
         /// Initializes a new instance of the BilinearInterpolation class using a 2D data array.
         /// </summary>
         /// <param name="data">The 2D data array.</param>
-        public BilinearInterpolation(double[,] data)
+        public BilinearInterpolation(double[,]? data)
         {
             if (data == null || data.GetLength(0) < 1 || data.GetLength(1) < 1)
             {
@@ -71,7 +71,7 @@ namespace DiGi.Math.Classes
         /// Copy constructor. Initializes a new instance of the BilinearInterpolation class by copying an existing instance.
         /// </summary>
         /// <param name="bilinearInterpolation">The instance to copy.</param>
-        public BilinearInterpolation(BilinearInterpolation bilinearInterpolation)
+        public BilinearInterpolation(BilinearInterpolation? bilinearInterpolation)
         {
             if (bilinearInterpolation != null)
             {
@@ -152,10 +152,10 @@ namespace DiGi.Math.Classes
             }
 
             double result = fQ11 * (x2 - x) * (y2 - y);
-            result = result + fQ21 * (x - x1) * (y2 - y);
-            result = result + fQ12 * (x2 - x) * (y - y1);
-            result = result + fQ22 * (x - x1) * (y - y1);
-            result = result / ((x2 - x1) * (y2 - y1));
+            result += fQ21 * (x - x1) * (y2 - y);
+            result += fQ12 * (x2 - x) * (y - y1);
+            result += fQ22 * (x - x1) * (y - y1);
+            result /= ((x2 - x1) * (y2 - y1));
 
             return result;
         }

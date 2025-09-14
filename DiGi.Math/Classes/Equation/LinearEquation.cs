@@ -13,10 +13,10 @@ namespace DiGi.Math.Classes
     public class LinearEquation : SerializableObject, IEquation
     {
         [JsonInclude, JsonPropertyName("A")]
-        private double a;
+        private readonly double a;
 
         [JsonInclude, JsonPropertyName("B")]
-        private double b;
+        private readonly double b;
 
         public LinearEquation(JsonObject jsonObject)
             : base(jsonObject)
@@ -70,7 +70,7 @@ namespace DiGi.Math.Classes
         {
             get
             {
-                return new List<double>() { b, a };
+                return [b, a];
             }
         }
 
@@ -94,12 +94,14 @@ namespace DiGi.Math.Classes
         /// </summary>
         /// <param name="values">The collection of values of x</param>
         /// <returns>A list of corresponding values of y</returns>
-        public List<double> Evaluate(IEnumerable<double> values)
+        public List<double>? Evaluate(IEnumerable<double>? values)
         {
             if (values == null)
+            {
                 return null;
+            }
 
-            List<double> result = new List<double>();
+            List<double> result = [];
             foreach (double value in values)
             {
                 result.Add(Evaluate(value));

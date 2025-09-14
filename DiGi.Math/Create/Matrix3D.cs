@@ -4,7 +4,7 @@
     {
         public static partial class Matrix3D
         {
-            public static Classes.Matrix3D ByMatrix(Classes.Matrix matrix)
+            public static Classes.Matrix3D? ByMatrix(Classes.Matrix? matrix)
             {
                 if (matrix == null)
                 {
@@ -16,7 +16,7 @@
                     return null;
                 }
 
-                Classes.Matrix3D result = new Classes.Matrix3D();
+                Classes.Matrix3D result = new();
                 for (int i = 0; i < 3; i++)
                 {
                     for (int j = 0; j < 3; j++)
@@ -28,7 +28,7 @@
                 return result;
             }
 
-            public static Classes.Matrix3D ByValues(double[,] values)
+            public static Classes.Matrix3D? ByValues(double[,]? values)
             {
                 if (values == null)
                 {
@@ -40,7 +40,7 @@
                     return null;
                 }
 
-                Classes.Matrix3D result = new Classes.Matrix3D();
+                Classes.Matrix3D result = new();
                 for (int i = 0; i < 3; i++)
                 {
                     for (int j = 0; j < 3; j++)
@@ -54,7 +54,7 @@
 
             public static Classes.Matrix3D Identity()
             {
-                Classes.Matrix3D matrix3D = new Classes.Matrix3D();
+                Classes.Matrix3D matrix3D = new();
                 for (int i = 0; i < 3; i++)
                 {
                     matrix3D[i, i] = 1;

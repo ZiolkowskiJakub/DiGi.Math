@@ -4,15 +4,12 @@ namespace DiGi.Math
 {
     public static partial class Create
     {
-        public static LinearEquation LinearEquation(double x_1, double y_1, double x_2, double y_2)
+        public static LinearEquation? LinearEquation(double x_1, double y_1, double x_2, double y_2)
         {
             if (double.IsNaN(x_1) || double.IsNaN(x_2) || double.IsNaN(y_1) || double.IsNaN(y_2))
             {
                 return null;
             }
-
-            double a = double.NaN;
-            double b = double.NaN;
 
             double x = x_2 - x_1;
             if (x == 0)
@@ -20,7 +17,7 @@ namespace DiGi.Math
                 return null;
             }
 
-            a = (y_2 - y_1) / x;
+            double a = (y_2 - y_1) / x;
             if (double.IsNaN(a))
             {
                 return null;
@@ -39,8 +36,7 @@ namespace DiGi.Math
                 return null;
             }
 
-            b = y - ax;
-
+            double b = y - ax;
             return new LinearEquation(a, b);
         }
     }

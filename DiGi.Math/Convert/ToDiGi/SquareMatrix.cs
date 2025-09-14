@@ -5,7 +5,7 @@ namespace DiGi.Math
 {
     public static partial class Convert
     {
-        public static ISquareMatrix ToDiGi_SquareMatrix(this Matrix matrix)
+        public static ISquareMatrix? ToDiGi_SquareMatrix(this Matrix? matrix)
         {
             if (matrix == null)
             {

@@ -9,7 +9,7 @@
         /// <param name="value">Value</param>
         /// <param name="lowerIndex">Lower Index</param>
         /// <param name="upperIndex">Upper Index</param>
-        public static void NeigbourIndices(double[] values, double value, out int lowerIndex, out int upperIndex)
+        public static void NeigbourIndices(double[]? values, double value, out int lowerIndex, out int upperIndex)
         {
             lowerIndex = -1;
             upperIndex = -1;

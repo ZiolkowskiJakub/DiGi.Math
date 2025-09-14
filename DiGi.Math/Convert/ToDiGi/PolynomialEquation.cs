@@ -4,7 +4,7 @@ namespace DiGi.Math
 {
     public static partial class Convert
     {
-        public static PolynomialEquation ToDiGi(this MathNet.Numerics.Polynomial polynomial)
+        public static PolynomialEquation? ToDiGi(this MathNet.Numerics.Polynomial? polynomial)
         {
             if (polynomial == null)
             {

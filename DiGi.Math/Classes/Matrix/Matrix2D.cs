@@ -1,16 +1,17 @@
-﻿using DiGi.Math.Interfaces;
+﻿using DiGi.Core.Interfaces;
+using DiGi.Math.Interfaces;
 using System.Text.Json.Nodes;
 
 namespace DiGi.Math.Classes
 {
     public class Matrix2D : Matrix, ISquareMatrix
     {
-        public Matrix2D(JsonObject jsonObject)
+        public Matrix2D(JsonObject? jsonObject)
             : base(jsonObject)
         {
         }
 
-        public Matrix2D(Matrix2D matrix2D)
+        public Matrix2D(Matrix2D? matrix2D)
             : base(matrix2D)
         {
 
@@ -22,19 +23,19 @@ namespace DiGi.Math.Classes
 
         }
 
-        public override Matrix Clone()
+        public override ISerializableObject? Clone()
         {
             return new Matrix2D(this);
         }
 
-        public static Matrix2D operator *(Matrix2D matrix2D_1, Matrix2D matrix2D_2)
+        public static Matrix2D? operator *(Matrix2D? matrix2D_1, Matrix2D? matrix2D_2)
         {
             if (matrix2D_1 == null || matrix2D_2 == null)
             {
                 return null;
             }
 
-            Matrix matrix = ((Matrix)matrix2D_1) * ((Matrix)matrix2D_2);
+            Matrix? matrix = ((Matrix)matrix2D_1) * ((Matrix)matrix2D_2);
             if (matrix == null)
             {
                 return null;
@@ -43,14 +44,14 @@ namespace DiGi.Math.Classes
             return Create.Matrix2D.ByMatrix(matrix);
         }
 
-        public static Matrix2D operator *(Matrix2D matrix2D, double value)
+        public static Matrix2D? operator *(Matrix2D? matrix2D, double value)
         {
             if (matrix2D == null)
             {
                 return null;
             }
 
-            Matrix matrix = (Matrix)matrix2D * value;
+            Matrix? matrix = (Matrix)matrix2D * value;
             if (matrix == null)
             {
                 return null;
@@ -59,14 +60,14 @@ namespace DiGi.Math.Classes
             return Create.Matrix2D.ByMatrix(matrix);
         }
 
-        public static Matrix2D operator +(Matrix2D matrix2D, double value)
+        public static Matrix2D? operator +(Matrix2D? matrix2D, double value)
         {
             if (matrix2D == null)
             {
                 return null;
             }
 
-            Matrix matrix = (Matrix)matrix2D + value;
+            Matrix? matrix = (Matrix)matrix2D + value;
             if (matrix == null)
             {
                 return null;
@@ -75,14 +76,14 @@ namespace DiGi.Math.Classes
             return Create.Matrix2D.ByMatrix(matrix);
         }
 
-        public static Matrix2D operator +(Matrix2D matrix2D_1, Matrix2D matrix2D_2)
+        public static Matrix2D? operator +(Matrix2D? matrix2D_1, Matrix2D? matrix2D_2)
         {
             if (matrix2D_1 == null || matrix2D_2 == null)
             {
                 return null;
             }
 
-            Matrix matrix = ((Matrix)matrix2D_1) + ((Matrix)matrix2D_2);
+            Matrix? matrix = ((Matrix)matrix2D_1) + ((Matrix)matrix2D_2);
             if (matrix == null)
             {
                 return null;
@@ -91,14 +92,14 @@ namespace DiGi.Math.Classes
             return Create.Matrix2D.ByMatrix(matrix);
         }
 
-        public static Matrix2D operator -(Matrix2D matrix2D_1, Matrix2D matrix2D_2)
+        public static Matrix2D? operator -(Matrix2D? matrix2D_1, Matrix2D? matrix2D_2)
         {
             if (matrix2D_1 == null || matrix2D_2 == null)
             {
                 return null;
             }
 
-            Matrix matrix = ((Matrix)matrix2D_1) + ((Matrix)matrix2D_2);
+            Matrix? matrix = ((Matrix)matrix2D_1) + ((Matrix)matrix2D_2);
             if (matrix == null)
             {
                 return null;
@@ -107,14 +108,14 @@ namespace DiGi.Math.Classes
             return Create.Matrix2D.ByMatrix(matrix);
         }
 
-        public static Matrix2D operator -(Matrix2D matrix2D, double value)
+        public static Matrix2D? operator -(Matrix2D? matrix2D, double value)
         {
             if (matrix2D == null)
             {
                 return null;
             }
 
-            Matrix matrix = (Matrix)matrix2D + (-value);
+            Matrix? matrix = (Matrix)matrix2D + (-value);
             if (matrix == null)
             {
                 return null;
@@ -124,8 +125,13 @@ namespace DiGi.Math.Classes
         }
 
         
-        public static explicit operator Matrix2D(double[,] values)
+        public static explicit operator Matrix2D?(double[,]? values)
         {
+            if(values == null)
+            {
+                return null;
+            }
+
             return Create.Matrix2D.ByValues(values);
         }
     }

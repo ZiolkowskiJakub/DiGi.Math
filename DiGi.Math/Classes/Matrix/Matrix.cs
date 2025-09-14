@@ -1,4 +1,5 @@
-﻿using DiGi.Math.Interfaces;
+﻿using DiGi.Core.Interfaces;
+using DiGi.Math.Interfaces;
 using System;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
@@ -8,47 +9,56 @@ namespace DiGi.Math.Classes
     public class Matrix : Core.Classes.SerializableObject, IMatrix
     {
         [JsonInclude, JsonPropertyName("Values")]
-        private double[,] values;
+        private double[,]? values;
 
         public Matrix(int rowCount, int columnCount)
         {
             values = new double[rowCount, columnCount];
         }
 
-        public Matrix(double[] values)
+        public Matrix(double[]? values)
         {
             if (values == null)
-                this.values = default;
-
-            this.values = new double[1, values.Length];
-            for (int i = 0; i < values.Length; i++)
-                this.values[0, i] = values[i];
-        }
-
-        public Matrix(double[,] values)
-        {
-            int count_Rows = values.GetLength(0);
-            int count_Columns = values.GetLength(1);
-
-            this.values = new double[count_Rows, count_Columns];
-            for (int i = 0; i < count_Rows; i++)
             {
-                for (int j = 0; j < count_Columns; j++)
+                this.values = default;
+            }
+            else
+            {
+                this.values = new double[1, values.Length];
+                for (int i = 0; i < values.Length; i++)
                 {
-                    this.values[i, j] = values[i, j];
+                    this.values[0, i] = values[i];
                 }
             }
         }
 
-        public Matrix(JsonObject jsonObject)
+        public Matrix(double[,]? values)
+        {
+            if(values != null)
+            {
+                int count_Rows = values.GetLength(0);
+                int count_Columns = values.GetLength(1);
+
+                this.values = new double[count_Rows, count_Columns];
+                for (int i = 0; i < count_Rows; i++)
+                {
+                    for (int j = 0; j < count_Columns; j++)
+                    {
+                        this.values[i, j] = values[i, j];
+                    }
+                }
+            }
+        }
+
+        public Matrix(JsonObject? jsonObject)
             :base(jsonObject)
         {
 
         }
 
-        public Matrix(Matrix matrix)
+        public Matrix(Matrix? matrix)
         {
-            if (matrix == null)
+            if (matrix?.values == null)
             {
                 return;
             }
@@ -91,6 +101,11 @@ namespace DiGi.Math.Classes
 
         public void SetValues(double value)
         {
+            if(values == null)
+            {
+                return;
+            }
+
             int count_Rows = values.GetLength(0);
             int count_Columns = values.GetLength(1);
 
@@ -103,9 +118,9 @@ namespace DiGi.Math.Classes
             }
         }
 
-        public virtual Matrix Clone()
+        public override ISerializableObject? Clone()
         {
-            return new Matrix((double[,])values.Clone());
+            return new Matrix((double[,]?)values?.Clone());
         }
 
         public int RowCount()
@@ -128,8 +143,13 @@ namespace DiGi.Math.Classes
             return values.GetLength(1);
         }
 
-        public double[,] ToArray()
+        public double[,]? ToArray()
         {
+            if(values == null)
+            {
+                return null;
+            }
+
             int count_Rows = values.GetLength(0);
             int count_Columns = values.GetLength(1);
 
@@ -148,6 +168,11 @@ namespace DiGi.Math.Classes
         public double REFTolerance(double tolerance = Core.Constans.Tolerance.Distance)
         {
             // Inspired by BHoM
+
+            if(values == null)
+            {
+                return double.NaN;
+            }
 
             int length_1 = values.GetLength(0);
             int length_2 = values.GetLength(1);
@@ -171,11 +196,16 @@ namespace DiGi.Math.Classes
             return result;
         }
 
-        public Matrix RowEchelonForm(bool reduced = true, double tolerance = Core.Constans.Tolerance.Distance)
+        public Matrix? RowEchelonForm(bool reduced = true, double tolerance = Core.Constans.Tolerance.Distance)
         {
             // Inspired by BHoM Strongly inspired by https://rosettacode.org/wiki/Reduced_row_echelon_form
 
-            Matrix matrix = Clone();
+            Matrix? matrix = Core.Query.Clone(this);
+            if(matrix == null)
+            {
+                return null;
+            }
+
             int lead = 0;
             int rowCount = matrix.RowCount();
             int columnCount = matrix.ColumnCount();
@@ -205,9 +235,7 @@ namespace DiGi.Math.Classes
 
                 for (int j = 0; j < columnCount; j++)
                 {
-                    double temp = matrix[r, j];
-                    matrix[r, j] = matrix[i, j];
-                    matrix[i, j] = temp;
+                    (matrix[i, j], matrix[r, j]) = (matrix[r, j], matrix[i, j]);
                 }
 
                 double div = matrix[r, lead];
@@ -261,7 +289,7 @@ namespace DiGi.Math.Classes
             return count;
         }
 
-        public double[] Eigenvalues(double tolerance = Core.Constans.Tolerance.Distance)
+        public double[]? Eigenvalues(double tolerance = Core.Constans.Tolerance.Distance)
         {
             // Inspired by BHoM
 
@@ -301,6 +329,11 @@ namespace DiGi.Math.Classes
 
         public override int GetHashCode()
         {
+            if(values == null)
+            {
+                return -1;
+            }
+
             int result = int.MinValue;
             for (int i = 0; i < values.GetLength(0); i++)
             {
@@ -312,7 +345,7 @@ namespace DiGi.Math.Classes
                     }
                     else
                     {
-                        result = result ^ values[i, j].GetHashCode();
+                        result ^= values[i, j].GetHashCode();
                     }
                 }
             }
@@ -322,6 +355,11 @@ namespace DiGi.Math.Classes
 
         public void Round(double tolerance = Core.Constans.Tolerance.Distance)
         {
+            if (values == null)
+            {
+                return;
+            }
+
             int count_Rows = values.GetLength(0);
             int count_Columns = values.GetLength(1);
 
@@ -336,6 +374,11 @@ namespace DiGi.Math.Classes
 
         public void Transpose()
         {
+            if (values == null)
+            {
+                return;
+            }
+
             int count_Rows = values.GetLength(0);
             int count_Columns = values.GetLength(1);
 
@@ -352,10 +395,10 @@ namespace DiGi.Math.Classes
             values = values_Temp;
         }
 
-        public Matrix GetTransposed()
+        public Matrix? GetTransposed()
         {
-            Matrix result = Clone();
-            result.Transpose();
+            Matrix? result = Core.Query.Clone(this);
+            result?.Transpose();
             return result;
         }
 
@@ -366,7 +409,7 @@ namespace DiGi.Math.Classes
                 return;
             }
 
-            double[,] values_Temp = this.ToMathNet().Inverse()?.ToArray();
+            double[,]? values_Temp = this.ToMathNet()?.Inverse()?.ToArray();
             if (values_Temp == null)
             {
                 return;
@@ -377,6 +420,11 @@ namespace DiGi.Math.Classes
 
         public void Negate()
         {
+            if (values == null)
+            {
+                return;
+            }
+
             int count_Rows = values.GetLength(0);
             int count_Columns = values.GetLength(1);
 
@@ -389,20 +437,25 @@ namespace DiGi.Math.Classes
             }
         }
 
-        public Matrix GetInversed()
+        public Matrix? GetInversed()
         {
             if (!IsSquare())
             {
                 return null;
             }
 
-            Matrix result = Clone();
-            result.Inverse();
+            Matrix? result = Core.Query.Clone(this);
+            result?.Inverse();
             return result;
         }
 
-        public Matrix GetMinorMatrix(int row, int column)
+        public Matrix? GetMinorMatrix(int row, int column)
         {
+            if (values == null)
+            {
+                return null;
+            }
+
             int count_Rows = values.GetLength(0);
             int count_Columns = values.GetLength(1);
             if (count_Columns <= 1 || count_Rows <= 1)
@@ -445,8 +498,13 @@ namespace DiGi.Math.Classes
             return new Matrix(values_Temp);
         }
 
-        public Matrix GetMinorsMatrix()
+        public Matrix? GetMinorsMatrix()
         {
+            if (values == null)
+            {
+                return null;
+            }
+
             int count_Rows = values.GetLength(0);
             int count_Columns = values.GetLength(1);
 
@@ -455,7 +513,14 @@ namespace DiGi.Math.Classes
             {
                 for (int j = 0; j < count_Columns; j++)
                 {
-                    values_Temp[i, j] = GetMinorMatrix(i, j).Determinant();
+                    double determinant = double.NaN;
+                    Matrix? matrix = GetMinorMatrix(i, j);
+                    if (matrix != null)
+                    {
+                        determinant = matrix.Determinant();
+                    }
+
+                    values_Temp[i, j] = determinant;
                 }
             }
 
@@ -463,8 +528,13 @@ namespace DiGi.Math.Classes
             return new Matrix(values_Temp);
         }
 
-        public Matrix GetCofactorsMatrix()
+        public Matrix? GetCofactorsMatrix()
         {
+            if (values == null)
+            {
+                return null;
+            }
+
             int count_Rows = values.GetLength(0);
             int count_Columns = values.GetLength(1);
 
@@ -482,7 +552,7 @@ namespace DiGi.Math.Classes
 
         public double Determinant()
         {
-            if (!IsSquare())
+            if (values == null || !IsSquare())
             {
                 return double.NaN;
             }
@@ -507,50 +577,79 @@ namespace DiGi.Math.Classes
                     + (values[0, 2] * ((values[1, 0] * values[2, 1]) - (values[1, 1] * values[2, 0])));
             }
 
-            MathNet.Numerics.LinearAlgebra.Matrix<double> matrix = Convert.ToMathNet(this);
+            MathNet.Numerics.LinearAlgebra.Matrix<double>? matrix = Convert.ToMathNet(this);
+            if(matrix == null)
+            {
+                return double.NaN;
+            }
+
             return matrix.Determinant();
         }
 
         public bool IsSquare()
         {
+            if(values == null)
+            {
+                return false;
+            }
+
             return values.GetLength(0) == values.GetLength(1);
         }
 
-        public bool SizeEqual(Matrix matrix)
+        public bool SizeEqual(Matrix? matrix)
         {
+            if (values == null && matrix?.values == null)
+            {
+                return true;
+            }
+
+            if(values == null || matrix?.values == null)
+            {
+                return false;
+            }
+
             return values.GetLength(0) == matrix.values.GetLength(0) && values.GetLength(1) == matrix.values.GetLength(1);
         }
 
-        public Matrix Multiply(Matrix matrix)
+        public Matrix? Multiply(Matrix? matrix)
         {
             return this * matrix;
         }
 
-        public Matrix Multiply(double value)
+        public Matrix? Multiply(double value)
         {
             return this * value;
         }
 
-        public Matrix Size()
+        public Matrix? Size()
         {
-            return new Matrix(new double[] { values.GetLength(0), values.GetLength(1) });
+            if(values == null)
+            {
+                return null;
+            }
+
+            return new Matrix([values.GetLength(0), values.GetLength(1)]);
         }
 
-        public static Matrix operator *(Matrix matrix_1, Matrix matrix_2)
+        public static Matrix? operator *(Matrix? matrix_1, Matrix? matrix_2)
         {
             if (matrix_1 == null || matrix_2 == null)
+            {
                 return null;
+            }
 
             int columnCount_1 = matrix_1.ColumnCount();
 
             if (columnCount_1 != matrix_2.RowCount())
-                return null;
+            {
+                 return null;
+            }
 
             int rowCount_1 = matrix_1.RowCount();
 
             int columnCount_2 = matrix_2.ColumnCount();
 
-            Matrix result = new Matrix(rowCount_1, columnCount_2);
+            Matrix result = new(rowCount_1, columnCount_2);
             for (int i = 0; i < rowCount_1; i++)
             {
                 for (int j = 0; j < columnCount_2; j++)
@@ -566,8 +665,13 @@ namespace DiGi.Math.Classes
             return result;
         }
 
-        public static Matrix operator *(Matrix matrix, double value)
+        public static Matrix? operator *(Matrix? matrix, double value)
         {
+            if(matrix?.values == null)
+            {
+                return null;
+            }
+
             int count_Rows = matrix.values.GetLength(0);
             int count_Columns = matrix.values.GetLength(1);
 
@@ -584,8 +688,13 @@ namespace DiGi.Math.Classes
             return new Matrix(values_Temp);
         }
 
-        public static Matrix operator +(Matrix matrix, double value)
+        public static Matrix? operator +(Matrix? matrix, double value)
         {
+            if(matrix?.values == null)
+            {
+                return null;
+            }
+
             int count_Rows = matrix.values.GetLength(0);
             int count_Columns = matrix.values.GetLength(1);
 
@@ -602,9 +711,9 @@ namespace DiGi.Math.Classes
             return new Matrix(values_Temp);
         }
 
-        public static Matrix operator +(Matrix matrix_1, Matrix matrix_2)
+        public static Matrix? operator +(Matrix? matrix_1, Matrix? matrix_2)
         {
-            if (matrix_1 == null || matrix_2 == null)
+            if (matrix_1?.values == null || matrix_2?.values == null)
             {
                 return null;
             }
@@ -614,25 +723,27 @@ namespace DiGi.Math.Classes
                 return null;
             }
 
-            Matrix result = new Matrix(matrix_1);
-
-            int count_Rows = result.values.GetLength(0);
-            int count_Columns = result.values.GetLength(1);
-
-            for (int i = 0; i < count_Rows; i++)
+            Matrix result = new(matrix_1);
+            if(result.values != null)
             {
-                for (int j = 0; j < count_Columns; j++)
+                int count_Rows = result.values.GetLength(0);
+                int count_Columns = result.values.GetLength(1);
+
+                for (int i = 0; i < count_Rows; i++)
                 {
-                    result.values[i, j] += matrix_2.values[i, j];
+                    for (int j = 0; j < count_Columns; j++)
+                    {
+                        result.values[i, j] += matrix_2.values[i, j];
+                    }
                 }
             }
 
             return result;
         }
 
-        public static Matrix operator -(Matrix matrix_1, Matrix matrix_2)
+        public static Matrix? operator -(Matrix? matrix_1, Matrix? matrix_2)
         {
-            if (matrix_1 == null || matrix_2 == null)
+            if (matrix_1?.values == null || matrix_2?.values == null)
             {
                 return null;
             }
@@ -642,36 +753,48 @@ namespace DiGi.Math.Classes
                 return null;
             }
 
-            Matrix result = new Matrix(matrix_1);
+            Matrix result = new(matrix_1);
 
-            int count_Rows = result.values.GetLength(0);
-            int count_Columns = result.values.GetLength(1);
-
-            for (int i = 0; i < count_Rows; i++)
+            if(result.values != null)
             {
-                for (int j = 0; j < count_Columns; j++)
+                int count_Rows = result.values.GetLength(0);
+                int count_Columns = result.values.GetLength(1);
+
+                for (int i = 0; i < count_Rows; i++)
                 {
-                    result.values[i, j] -= matrix_2.values[i, j];
+                    for (int j = 0; j < count_Columns; j++)
+                    {
+                        result.values[i, j] -= matrix_2.values[i, j];
+                    }
                 }
             }
 
             return result;
         }
 
-        public static Matrix operator -(Matrix matrix, double value)
+        public static Matrix? operator -(Matrix? matrix, double value)
         {
             return matrix + (-value);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
-            Matrix matrix = obj as Matrix;
-            if (matrix == null)
+            if (obj is not Matrix matrix)
             {
                 return false;
             }
 
             if (!SizeEqual(matrix))
+            {
+                return false;
+            }
+
+            if(values == null && matrix.values == null)
+            {
+                return true;
+            }
+
+            if (values == null || matrix.values == null)
             {
                 return false;
             }
@@ -694,7 +817,7 @@ namespace DiGi.Math.Classes
         }
 
 
-        public static explicit operator Matrix(double[,] values)
+        public static explicit operator Matrix?(double[,]? values)
         {
             if (values == null)
             {

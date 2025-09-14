@@ -9,7 +9,7 @@ namespace DiGi.Math
         {
             public static Classes.Matrix Identity(int count = 3)
             {
-                Classes.Matrix matrix = new Classes.Matrix(new double[count, count]);
+                Classes.Matrix matrix = new(new double[count, count]);
                 for (int i = 0; i < count; i++)
                 {
                     matrix[i, i] = 1;
@@ -18,18 +18,12 @@ namespace DiGi.Math
                 return matrix;
             }
 
-            public static Classes.Matrix Unset(int rowCount, int columnCount)
-            {
-                Classes.Matrix result = new Classes.Matrix(rowCount, columnCount);
-                result.SetValues(double.MinValue);
-
-                return result;
-            }
-
-            public static Classes.Matrix Scale(IEnumerable<double> values)
+            public static Classes.Matrix? Scale(IEnumerable<double>? values)
             {
                 if (values == null)
+                {
                     return null;
+                }
 
                 int count = values.Count();
 
@@ -53,6 +47,14 @@ namespace DiGi.Math
                 }
 
                 return matrix;
+            }
+
+            public static Classes.Matrix Unset(int rowCount, int columnCount)
+            {
+                Classes.Matrix result = new(rowCount, columnCount);
+                result.SetValues(double.MinValue);
+
+                return result;
             }
         }
 

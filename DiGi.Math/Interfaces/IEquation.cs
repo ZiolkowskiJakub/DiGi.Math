@@ -6,6 +6,6 @@ namespace DiGi.Math.Interfaces
     {
         double Evaluate(double value);
 
-        List<double> Evaluate(IEnumerable<double> values);
+        List<double>? Evaluate(IEnumerable<double>? values);
     }
 }
