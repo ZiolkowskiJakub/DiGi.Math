@@ -99,38 +99,165 @@ namespace DiGi.Math.Classes
             }
         }
 
-        public void SetValues(double value)
+        public static explicit operator Matrix?(double[,]? values)
         {
-            if(values == null)
+            if (values == null)
             {
-                return;
+                return null;
             }
 
-            int count_Rows = values.GetLength(0);
-            int count_Columns = values.GetLength(1);
+            return new Matrix(values);
+        }
+
+        public static Matrix? operator -(Matrix? matrix_1, Matrix? matrix_2)
+        {
+            if (matrix_1?.values == null || matrix_2?.values == null)
+            {
+                return null;
+            }
+
+            if (!matrix_1.SizeEqual(matrix_2))
+            {
+                return null;
+            }
+
+            Matrix result = new(matrix_1);
+
+            if (result.values != null)
+            {
+                int count_Rows = result.values.GetLength(0);
+                int count_Columns = result.values.GetLength(1);
+
+                for (int i = 0; i < count_Rows; i++)
+                {
+                    for (int j = 0; j < count_Columns; j++)
+                    {
+                        result.values[i, j] -= matrix_2.values[i, j];
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public static Matrix? operator -(Matrix? matrix, double value)
+        {
+            return matrix + (-value);
+        }
+
+        public static Matrix? operator *(Matrix? matrix_1, Matrix? matrix_2)
+        {
+            if (matrix_1 == null || matrix_2 == null)
+            {
+                return null;
+            }
+
+            int columnCount_1 = matrix_1.ColumnCount();
+
+            if (columnCount_1 != matrix_2.RowCount())
+            {
+                return null;
+            }
+
+            int rowCount_1 = matrix_1.RowCount();
+
+            int columnCount_2 = matrix_2.ColumnCount();
+
+            Matrix result = new(rowCount_1, columnCount_2);
+            for (int i = 0; i < rowCount_1; i++)
+            {
+                for (int j = 0; j < columnCount_2; j++)
+                {
+                    result[i, j] = 0;
+                    for (int k = 0; k < columnCount_1; k++)
+                    {
+                        result[i, j] += matrix_1[i, k] * matrix_2[k, j];
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public static Matrix? operator *(Matrix? matrix, double value)
+        {
+            if (matrix?.values == null)
+            {
+                return null;
+            }
+
+            int count_Rows = matrix.values.GetLength(0);
+            int count_Columns = matrix.values.GetLength(1);
+
+            double[,] values_Temp = new double[count_Columns, count_Rows];
 
             for (int i = 0; i < count_Rows; i++)
             {
                 for (int j = 0; j < count_Columns; j++)
                 {
-                    values[i, j] = value;
+                    values_Temp[i, j] = matrix.values[i, j] * value;
                 }
             }
+
+            return new Matrix(values_Temp);
+        }
+
+        public static Matrix? operator +(Matrix? matrix, double value)
+        {
+            if (matrix?.values == null)
+            {
+                return null;
+            }
+
+            int count_Rows = matrix.values.GetLength(0);
+            int count_Columns = matrix.values.GetLength(1);
+
+            double[,] values_Temp = new double[count_Columns, count_Rows];
+
+            for (int i = 0; i < count_Rows; i++)
+            {
+                for (int j = 0; j < count_Columns; j++)
+                {
+                    values_Temp[i, j] = matrix.values[i, j] + value;
+                }
+            }
+
+            return new Matrix(values_Temp);
+        }
+
+        public static Matrix? operator +(Matrix? matrix_1, Matrix? matrix_2)
+        {
+            if (matrix_1?.values == null || matrix_2?.values == null)
+            {
+                return null;
+            }
+
+            if (!matrix_1.SizeEqual(matrix_2))
+            {
+                return null;
+            }
+
+            Matrix result = new(matrix_1);
+            if (result.values != null)
+            {
+                int count_Rows = result.values.GetLength(0);
+                int count_Columns = result.values.GetLength(1);
+
+                for (int i = 0; i < count_Rows; i++)
+                {
+                    for (int j = 0; j < count_Columns; j++)
+                    {
+                        result.values[i, j] += matrix_2.values[i, j];
+                    }
+                }
+            }
+
+            return result;
         }
 
         public override ISerializableObject? Clone()
         {
             return new Matrix((double[,]?)values?.Clone());
-        }
-
-        public int RowCount()
-        {
-            if (values == null)
-            {
-                return -1;
-            }
-
-            return values.GetLength(0);
         }
 
         public int ColumnCount()
@@ -141,129 +268,6 @@ namespace DiGi.Math.Classes
             }
 
             return values.GetLength(1);
-        }
-
-        public double[,]? ToArray()
-        {
-            if(values == null)
-            {
-                return null;
-            }
-
-            int count_Rows = values.GetLength(0);
-            int count_Columns = values.GetLength(1);
-
-            double[,] result = new double[count_Rows, count_Columns];
-            for (int i = 0; i < count_Rows; i++)
-            {
-                for (int j = 0; j < count_Columns; j++)
-                {
-                    result[i, j] = values[i, j];
-                }
-            }
-
-            return result;
-        }
-
-        public double REFTolerance(double tolerance = Core.Constans.Tolerance.Distance)
-        {
-            // Inspired by BHoM
-
-            if(values == null)
-            {
-                return double.NaN;
-            }
-
-            int length_1 = values.GetLength(0);
-            int length_2 = values.GetLength(1);
-            double maxRowSum = 0;
-
-            for (int i = 0; i < length_1; i++)
-            {
-                double rowSum = 0;
-                for (int j = 0; j < length_2; j++)
-                    rowSum += System.Math.Abs(values[i, j]);
-
-                maxRowSum = System.Math.Max(maxRowSum, rowSum);
-            }
-
-            double result = tolerance * System.Math.Max(length_1, length_2) * maxRowSum;
-            if (result >= 1)
-            {
-                result = 1 - tolerance;
-            }
-
-            return result;
-        }
-
-        public Matrix? RowEchelonForm(bool reduced = true, double tolerance = Core.Constans.Tolerance.Distance)
-        {
-            // Inspired by BHoM Strongly inspired by https://rosettacode.org/wiki/Reduced_row_echelon_form
-
-            Matrix? matrix = Core.Query.Clone(this);
-            if(matrix == null)
-            {
-                return null;
-            }
-
-            int lead = 0;
-            int rowCount = matrix.RowCount();
-            int columnCount = matrix.ColumnCount();
-
-            for (int r = 0; r < rowCount; r++)
-            {
-                if (columnCount == lead)
-                {
-                    break;
-                }
-
-                int i = r;
-                while (System.Math.Abs(matrix[i, lead]) < tolerance)
-                {
-                    i++;
-                    if (i == rowCount)
-                    {
-                        i = r;
-                        lead++;
-                        if (columnCount == lead)
-                        {
-                            lead--;
-                            break;
-                        }
-                    }
-                }
-
-                for (int j = 0; j < columnCount; j++)
-                {
-                    (matrix[i, j], matrix[r, j]) = (matrix[r, j], matrix[i, j]);
-                }
-
-                double div = matrix[r, lead];
-                if (System.Math.Abs(div) >= tolerance)
-                {
-                    for (int j = 0; j < columnCount; j++)
-                    {
-                        matrix[r, j] /= div;
-                    }
-                }
-
-                int w = reduced ? 0 : r + 1;
-                for (; w < rowCount; w++)
-                {
-                    if (w != r)
-                    {
-                        double sub = matrix[w, lead];
-                        for (int k = 0; k < columnCount; k++)
-                        {
-                            matrix[w, k] -= (sub * matrix[r, k]);
-                        }
-                    }
-                }
-
-                lead++;
-            }
-
-            return matrix;
         }
 
         public int CountNonZeroRows(double tolerance = Core.Constans.Tolerance.Distance)
@@ -287,6 +291,42 @@ namespace DiGi.Math.Classes
             }
 
             return count;
+        }
+
+        public double Determinant()
+        {
+            if (values == null || !IsSquare())
+            {
+                return double.NaN;
+            }
+
+            int count = values.GetLength(0);
+
+            if (count == 1)
+            {
+                return values[0, 0];
+            }
+
+            if (count == 2)
+            {
+                return (values[0, 0] * values[1, 1]) - (values[1, 0] * values[0, 1]);
+            }
+
+            if (count == 3)
+            {
+                return
+                    +(values[0, 0] * ((values[1, 1] * values[2, 2]) - (values[1, 2] * values[2, 1])))
+                    - (values[0, 1] * ((values[1, 0] * values[2, 2]) - (values[1, 2] * values[2, 0])))
+                    + (values[0, 2] * ((values[1, 0] * values[2, 1]) - (values[1, 1] * values[2, 0])));
+            }
+
+            MathNet.Numerics.LinearAlgebra.Matrix<double>? matrix = Convert.ToMathNet(this);
+            if (matrix == null)
+            {
+                return double.NaN;
+            }
+
+            return matrix.Determinant();
         }
 
         public double[]? Eigenvalues(double tolerance = Core.Constans.Tolerance.Distance)
@@ -327,9 +367,70 @@ namespace DiGi.Math.Classes
             return Query.RealCubicRoots_ThreeRootsOnly(A, B, C, D, tolerance);
         }
 
+        public override bool Equals(object? obj)
+        {
+            if (obj is not Matrix matrix)
+            {
+                return false;
+            }
+
+            if (!SizeEqual(matrix))
+            {
+                return false;
+            }
+
+            if (values == null && matrix.values == null)
+            {
+                return true;
+            }
+
+            if (values == null || matrix.values == null)
+            {
+                return false;
+            }
+
+            int count_Rows = values.GetLength(0);
+            int count_Columns = values.GetLength(1);
+
+            for (int i = 0; i < count_Rows; i++)
+            {
+                for (int j = 0; j < count_Columns; j++)
+                {
+                    if (!values[i, j].Equals(matrix.values[i, j]))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        public Matrix? GetCofactorsMatrix()
+        {
+            if (values == null)
+            {
+                return null;
+            }
+
+            int count_Rows = values.GetLength(0);
+            int count_Columns = values.GetLength(1);
+
+            double[,] values_Temp = new double[count_Rows, count_Columns];
+            for (int i = 0; i < count_Rows; i++)
+            {
+                for (int j = 0; j < count_Columns; j++)
+                {
+                    values_Temp[i, j] = Query.MatrixCofactor(i, j);
+                }
+            }
+
+            return new Matrix(values_Temp);
+        }
+
         public override int GetHashCode()
         {
-            if(values == null)
+            if (values == null)
             {
                 return -1;
             }
@@ -351,90 +452,6 @@ namespace DiGi.Math.Classes
             }
 
             return result;
-        }
-
-        public void Round(double tolerance = Core.Constans.Tolerance.Distance)
-        {
-            if (values == null)
-            {
-                return;
-            }
-
-            int count_Rows = values.GetLength(0);
-            int count_Columns = values.GetLength(1);
-
-            for (int i = 0; i < count_Rows; i++)
-            {
-                for (int j = 0; j < count_Columns; j++)
-                {
-                    values[i, j] = Core.Query.Round(values[i, j], tolerance);
-                }
-            }
-        }
-
-        public void Transpose()
-        {
-            if (values == null)
-            {
-                return;
-            }
-
-            int count_Rows = values.GetLength(0);
-            int count_Columns = values.GetLength(1);
-
-            double[,] values_Temp = new double[count_Columns, count_Rows];
-
-            for (int i = 0; i < count_Rows; i++)
-            {
-                for (int j = 0; j < count_Columns; j++)
-                {
-                    values_Temp[j, i] = values[i, j];
-                }
-            }
-
-            values = values_Temp;
-        }
-
-        public Matrix? GetTransposed()
-        {
-            Matrix? result = Core.Query.Clone(this);
-            result?.Transpose();
-            return result;
-        }
-
-        public void Inverse()
-        {
-            if (!IsSquare())
-            {
-                return;
-            }
-
-            double[,]? values_Temp = this.ToMathNet()?.Inverse()?.ToArray();
-            if (values_Temp == null)
-            {
-                return;
-            }
-
-            values = values_Temp;
-        }
-
-        public void Negate()
-        {
-            if (values == null)
-            {
-                return;
-            }
-
-            int count_Rows = values.GetLength(0);
-            int count_Columns = values.GetLength(1);
-
-            for (int i = 0; i < count_Rows; i++)
-            {
-                for (int j = 0; j < count_Columns; j++)
-                {
-                    values[i, j] = -values[i, j];
-                }
-            }
         }
 
         public Matrix? GetInversed()
@@ -528,87 +545,37 @@ namespace DiGi.Math.Classes
             return new Matrix(values_Temp);
         }
 
-        public Matrix? GetCofactorsMatrix()
+        public Matrix? GetTransposed()
         {
-            if (values == null)
-            {
-                return null;
-            }
-
-            int count_Rows = values.GetLength(0);
-            int count_Columns = values.GetLength(1);
-
-            double[,] values_Temp = new double[count_Rows, count_Columns];
-            for (int i = 0; i < count_Rows; i++)
-            {
-                for (int j = 0; j < count_Columns; j++)
-                {
-                    values_Temp[i, j] = Query.MatrixCofactor(i, j);
-                }
-            }
-
-            return new Matrix(values_Temp);
+            Matrix? result = Core.Query.Clone(this);
+            result?.Transpose();
+            return result;
         }
 
-        public double Determinant()
+        public void Inverse()
         {
-            if (values == null || !IsSquare())
+            if (!IsSquare())
             {
-                return double.NaN;
+                return;
             }
 
-            int count = values.GetLength(0);
-
-            if (count == 1)
+            double[,]? values_Temp = this.ToMathNet()?.Inverse()?.ToArray();
+            if (values_Temp == null)
             {
-                return values[0, 0];
+                return;
             }
 
-            if (count == 2)
-            {
-                return (values[0, 0] * values[1, 1]) - (values[1, 0] * values[0, 1]);
-            }
-
-            if (count == 3)
-            {
-                return
-                    +(values[0, 0] * ((values[1, 1] * values[2, 2]) - (values[1, 2] * values[2, 1])))
-                    - (values[0, 1] * ((values[1, 0] * values[2, 2]) - (values[1, 2] * values[2, 0])))
-                    + (values[0, 2] * ((values[1, 0] * values[2, 1]) - (values[1, 1] * values[2, 0])));
-            }
-
-            MathNet.Numerics.LinearAlgebra.Matrix<double>? matrix = Convert.ToMathNet(this);
-            if(matrix == null)
-            {
-                return double.NaN;
-            }
-
-            return matrix.Determinant();
+            values = values_Temp;
         }
 
         public bool IsSquare()
         {
-            if(values == null)
+            if (values == null)
             {
                 return false;
             }
 
             return values.GetLength(0) == values.GetLength(1);
-        }
-
-        public bool SizeEqual(Matrix? matrix)
-        {
-            if (values == null && matrix?.values == null)
-            {
-                return true;
-            }
-
-            if(values == null || matrix?.values == null)
-            {
-                return false;
-            }
-
-            return values.GetLength(0) == matrix.values.GetLength(0) && values.GetLength(1) == matrix.values.GetLength(1);
         }
 
         public Matrix? Multiply(Matrix? matrix)
@@ -621,182 +588,11 @@ namespace DiGi.Math.Classes
             return this * value;
         }
 
-        public Matrix? Size()
+        public void Negate()
         {
-            if(values == null)
+            if (values == null)
             {
-                return null;
-            }
-
-            return new Matrix([values.GetLength(0), values.GetLength(1)]);
-        }
-
-        public static Matrix? operator *(Matrix? matrix_1, Matrix? matrix_2)
-        {
-            if (matrix_1 == null || matrix_2 == null)
-            {
-                return null;
-            }
-
-            int columnCount_1 = matrix_1.ColumnCount();
-
-            if (columnCount_1 != matrix_2.RowCount())
-            {
-                 return null;
-            }
-
-            int rowCount_1 = matrix_1.RowCount();
-
-            int columnCount_2 = matrix_2.ColumnCount();
-
-            Matrix result = new(rowCount_1, columnCount_2);
-            for (int i = 0; i < rowCount_1; i++)
-            {
-                for (int j = 0; j < columnCount_2; j++)
-                {
-                    result[i, j] = 0;
-                    for (int k = 0; k < columnCount_1; k++)
-                    {
-                        result[i, j] += matrix_1[i, k] * matrix_2[k, j];
-                    }
-                }
-            }
-
-            return result;
-        }
-
-        public static Matrix? operator *(Matrix? matrix, double value)
-        {
-            if(matrix?.values == null)
-            {
-                return null;
-            }
-
-            int count_Rows = matrix.values.GetLength(0);
-            int count_Columns = matrix.values.GetLength(1);
-
-            double[,] values_Temp = new double[count_Columns, count_Rows];
-
-            for (int i = 0; i < count_Rows; i++)
-            {
-                for (int j = 0; j < count_Columns; j++)
-                {
-                    values_Temp[i, j] = matrix.values[i, j] * value;
-                }
-            }
-
-            return new Matrix(values_Temp);
-        }
-
-        public static Matrix? operator +(Matrix? matrix, double value)
-        {
-            if(matrix?.values == null)
-            {
-                return null;
-            }
-
-            int count_Rows = matrix.values.GetLength(0);
-            int count_Columns = matrix.values.GetLength(1);
-
-            double[,] values_Temp = new double[count_Columns, count_Rows];
-
-            for (int i = 0; i < count_Rows; i++)
-            {
-                for (int j = 0; j < count_Columns; j++)
-                {
-                    values_Temp[i, j] = matrix.values[i, j] + value;
-                }
-            }
-
-            return new Matrix(values_Temp);
-        }
-
-        public static Matrix? operator +(Matrix? matrix_1, Matrix? matrix_2)
-        {
-            if (matrix_1?.values == null || matrix_2?.values == null)
-            {
-                return null;
-            }
-
-            if (!matrix_1.SizeEqual(matrix_2))
-            {
-                return null;
-            }
-
-            Matrix result = new(matrix_1);
-            if(result.values != null)
-            {
-                int count_Rows = result.values.GetLength(0);
-                int count_Columns = result.values.GetLength(1);
-
-                for (int i = 0; i < count_Rows; i++)
-                {
-                    for (int j = 0; j < count_Columns; j++)
-                    {
-                        result.values[i, j] += matrix_2.values[i, j];
-                    }
-                }
-            }
-
-            return result;
-        }
-
-        public static Matrix? operator -(Matrix? matrix_1, Matrix? matrix_2)
-        {
-            if (matrix_1?.values == null || matrix_2?.values == null)
-            {
-                return null;
-            }
-
-            if (!matrix_1.SizeEqual(matrix_2))
-            {
-                return null;
-            }
-
-            Matrix result = new(matrix_1);
-
-            if(result.values != null)
-            {
-                int count_Rows = result.values.GetLength(0);
-                int count_Columns = result.values.GetLength(1);
-
-                for (int i = 0; i < count_Rows; i++)
-                {
-                    for (int j = 0; j < count_Columns; j++)
-                    {
-                        result.values[i, j] -= matrix_2.values[i, j];
-                    }
-                }
-            }
-
-            return result;
-        }
-
-        public static Matrix? operator -(Matrix? matrix, double value)
-        {
-            return matrix + (-value);
-        }
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is not Matrix matrix)
-            {
-                return false;
-            }
-
-            if (!SizeEqual(matrix))
-            {
-                return false;
-            }
-
-            if(values == null && matrix.values == null)
-            {
-                return true;
-            }
-
-            if (values == null || matrix.values == null)
-            {
-                return false;
+                return;
             }
 
             int count_Rows = values.GetLength(0);
@@ -806,25 +602,226 @@ namespace DiGi.Math.Classes
             {
                 for (int j = 0; j < count_Columns; j++)
                 {
-                    if (!values[i, j].Equals(matrix.values[i, j]))
-                    {
-                        return false;
-                    }
+                    values[i, j] = -values[i, j];
                 }
             }
-
-            return true;
         }
 
+        public double REFTolerance(double tolerance = Core.Constans.Tolerance.Distance)
+        {
+            // Inspired by BHoM
 
-        public static explicit operator Matrix?(double[,]? values)
+            if (values == null)
+            {
+                return double.NaN;
+            }
+
+            int length_1 = values.GetLength(0);
+            int length_2 = values.GetLength(1);
+            double maxRowSum = 0;
+
+            for (int i = 0; i < length_1; i++)
+            {
+                double rowSum = 0;
+                for (int j = 0; j < length_2; j++)
+                    rowSum += System.Math.Abs(values[i, j]);
+
+                maxRowSum = System.Math.Max(maxRowSum, rowSum);
+            }
+
+            double result = tolerance * System.Math.Max(length_1, length_2) * maxRowSum;
+            if (result >= 1)
+            {
+                result = 1 - tolerance;
+            }
+
+            return result;
+        }
+
+        public void Round(double tolerance = Core.Constans.Tolerance.Distance)
+        {
+            if (values == null)
+            {
+                return;
+            }
+
+            int count_Rows = values.GetLength(0);
+            int count_Columns = values.GetLength(1);
+
+            for (int i = 0; i < count_Rows; i++)
+            {
+                for (int j = 0; j < count_Columns; j++)
+                {
+                    values[i, j] = Core.Query.Round(values[i, j], tolerance);
+                }
+            }
+        }
+
+        public int RowCount()
+        {
+            if (values == null)
+            {
+                return -1;
+            }
+
+            return values.GetLength(0);
+        }
+
+        public Matrix? RowEchelonForm(bool reduced = true, double tolerance = Core.Constans.Tolerance.Distance)
+        {
+            // Inspired by BHoM Strongly inspired by https://rosettacode.org/wiki/Reduced_row_echelon_form
+
+            Matrix? matrix = Core.Query.Clone(this);
+            if (matrix == null)
+            {
+                return null;
+            }
+
+            int lead = 0;
+            int rowCount = matrix.RowCount();
+            int columnCount = matrix.ColumnCount();
+
+            for (int r = 0; r < rowCount; r++)
+            {
+                if (columnCount == lead)
+                {
+                    break;
+                }
+
+                int i = r;
+                while (System.Math.Abs(matrix[i, lead]) < tolerance)
+                {
+                    i++;
+                    if (i == rowCount)
+                    {
+                        i = r;
+                        lead++;
+                        if (columnCount == lead)
+                        {
+                            lead--;
+                            break;
+                        }
+                    }
+                }
+
+                for (int j = 0; j < columnCount; j++)
+                {
+                    (matrix[i, j], matrix[r, j]) = (matrix[r, j], matrix[i, j]);
+                }
+
+                double div = matrix[r, lead];
+                if (System.Math.Abs(div) >= tolerance)
+                {
+                    for (int j = 0; j < columnCount; j++)
+                    {
+                        matrix[r, j] /= div;
+                    }
+                }
+
+                int w = reduced ? 0 : r + 1;
+                for (; w < rowCount; w++)
+                {
+                    if (w != r)
+                    {
+                        double sub = matrix[w, lead];
+                        for (int k = 0; k < columnCount; k++)
+                        {
+                            matrix[w, k] -= (sub * matrix[r, k]);
+                        }
+                    }
+                }
+
+                lead++;
+            }
+
+            return matrix;
+        }
+
+        public void SetValues(double value)
+        {
+            if(values == null)
+            {
+                return;
+            }
+
+            int count_Rows = values.GetLength(0);
+            int count_Columns = values.GetLength(1);
+
+            for (int i = 0; i < count_Rows; i++)
+            {
+                for (int j = 0; j < count_Columns; j++)
+                {
+                    values[i, j] = value;
+                }
+            }
+        }
+        public Matrix? Size()
         {
             if (values == null)
             {
                 return null;
             }
 
-            return new Matrix(values);
+            return new Matrix([values.GetLength(0), values.GetLength(1)]);
+        }
+
+        public bool SizeEqual(Matrix? matrix)
+        {
+            if (values == null && matrix?.values == null)
+            {
+                return true;
+            }
+
+            if (values == null || matrix?.values == null)
+            {
+                return false;
+            }
+
+            return values.GetLength(0) == matrix.values.GetLength(0) && values.GetLength(1) == matrix.values.GetLength(1);
+        }
+
+        public double[,]? ToArray()
+        {
+            if(values == null)
+            {
+                return null;
+            }
+
+            int count_Rows = values.GetLength(0);
+            int count_Columns = values.GetLength(1);
+
+            double[,] result = new double[count_Rows, count_Columns];
+            for (int i = 0; i < count_Rows; i++)
+            {
+                for (int j = 0; j < count_Columns; j++)
+                {
+                    result[i, j] = values[i, j];
+                }
+            }
+
+            return result;
+        }
+        public void Transpose()
+        {
+            if (values == null)
+            {
+                return;
+            }
+
+            int count_Rows = values.GetLength(0);
+            int count_Columns = values.GetLength(1);
+
+            double[,] values_Temp = new double[count_Columns, count_Rows];
+
+            for (int i = 0; i < count_Rows; i++)
+            {
+                for (int j = 0; j < count_Columns; j++)
+                {
+                    values_Temp[j, i] = values[i, j];
+                }
+            }
+
+            values = values_Temp;
         }
     }
 }

@@ -23,9 +23,46 @@ namespace DiGi.Math.Classes
 
         }
 
-        public override ISerializableObject? Clone()
+        public static explicit operator Matrix2D?(double[,]? values)
         {
-            return new Matrix2D(this);
+            if (values == null)
+            {
+                return null;
+            }
+
+            return Create.Matrix2D.ByValues(values);
+        }
+
+        public static Matrix2D? operator -(Matrix2D? matrix2D_1, Matrix2D? matrix2D_2)
+        {
+            if (matrix2D_1 == null || matrix2D_2 == null)
+            {
+                return null;
+            }
+
+            Matrix? matrix = ((Matrix)matrix2D_1) + ((Matrix)matrix2D_2);
+            if (matrix == null)
+            {
+                return null;
+            }
+
+            return Create.Matrix2D.ByMatrix(matrix);
+        }
+
+        public static Matrix2D? operator -(Matrix2D? matrix2D, double value)
+        {
+            if (matrix2D == null)
+            {
+                return null;
+            }
+
+            Matrix? matrix = (Matrix)matrix2D + (-value);
+            if (matrix == null)
+            {
+                return null;
+            }
+
+            return Create.Matrix2D.ByMatrix(matrix);
         }
 
         public static Matrix2D? operator *(Matrix2D? matrix2D_1, Matrix2D? matrix2D_2)
@@ -92,47 +129,9 @@ namespace DiGi.Math.Classes
             return Create.Matrix2D.ByMatrix(matrix);
         }
 
-        public static Matrix2D? operator -(Matrix2D? matrix2D_1, Matrix2D? matrix2D_2)
+        public override ISerializableObject? Clone()
         {
-            if (matrix2D_1 == null || matrix2D_2 == null)
-            {
-                return null;
-            }
-
-            Matrix? matrix = ((Matrix)matrix2D_1) + ((Matrix)matrix2D_2);
-            if (matrix == null)
-            {
-                return null;
-            }
-
-            return Create.Matrix2D.ByMatrix(matrix);
-        }
-
-        public static Matrix2D? operator -(Matrix2D? matrix2D, double value)
-        {
-            if (matrix2D == null)
-            {
-                return null;
-            }
-
-            Matrix? matrix = (Matrix)matrix2D + (-value);
-            if (matrix == null)
-            {
-                return null;
-            }
-
-            return Create.Matrix2D.ByMatrix(matrix);
-        }
-
-        
-        public static explicit operator Matrix2D?(double[,]? values)
-        {
-            if(values == null)
-            {
-                return null;
-            }
-
-            return Create.Matrix2D.ByValues(values);
+            return new Matrix2D(this);
         }
     }
 }

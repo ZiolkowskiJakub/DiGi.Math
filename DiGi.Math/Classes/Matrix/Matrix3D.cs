@@ -23,10 +23,48 @@ namespace DiGi.Math.Classes
 
         }
 
-        public override ISerializableObject? Clone()
+        public static explicit operator Matrix3D?(double[,]? values)
         {
-            return new Matrix3D(this);
-        }  
+            if (values == null)
+            {
+                return null;
+            }
+
+            return Create.Matrix3D.ByValues(values);
+        }
+
+        public static Matrix3D? operator -(Matrix3D? matrix3D_1, Matrix3D? matrix3D_2)
+        {
+            if (matrix3D_1 == null || matrix3D_2 == null)
+            {
+                return null;
+            }
+
+            Matrix? matrix = ((Matrix)matrix3D_1) + ((Matrix)matrix3D_2);
+            if (matrix == null)
+            {
+                return null;
+            }
+
+            return Create.Matrix3D.ByMatrix(matrix);
+        }
+
+        public static Matrix3D? operator -(Matrix3D? matrix3D, double value)
+        {
+            if (matrix3D == null)
+            {
+                return null;
+            }
+
+            Matrix? matrix = (Matrix)matrix3D + (-value);
+            if (matrix == null)
+            {
+                return null;
+            }
+
+
+            return Create.Matrix3D.ByMatrix(matrix);
+        }
 
         public static Matrix3D? operator *(Matrix3D? matrix3D_1, Matrix3D? matrix3D_2)
         {
@@ -92,48 +130,9 @@ namespace DiGi.Math.Classes
             return Create.Matrix3D.ByMatrix(matrix);
         }
 
-        public static Matrix3D? operator -(Matrix3D? matrix3D_1, Matrix3D? matrix3D_2)
+        public override ISerializableObject? Clone()
         {
-            if (matrix3D_1 == null || matrix3D_2 == null)
-            {
-                return null;
-            }
-
-            Matrix? matrix = ((Matrix)matrix3D_1) + ((Matrix)matrix3D_2);
-            if (matrix == null)
-            {
-                return null;
-            }
-
-            return Create.Matrix3D.ByMatrix(matrix);
-        }
-
-        public static Matrix3D? operator -(Matrix3D? matrix3D, double value)
-        {
-            if (matrix3D == null)
-            {
-                return null;
-            }
-
-            Matrix? matrix = (Matrix)matrix3D + (-value);
-            if (matrix == null)
-            {
-                return null;
-            }
-
-
-            return Create.Matrix3D.ByMatrix(matrix);
-        }
-
-
-        public static explicit operator Matrix3D?(double[,]? values)
-        {
-            if(values == null)
-            {
-                return null;
-            }
-
-            return Create.Matrix3D.ByValues(values);
-        }
+            return new Matrix3D(this);
+        }  
     }
 }

@@ -23,10 +23,48 @@ namespace DiGi.Math.Classes
 
         }
 
-        public override ISerializableObject? Clone()
+        public static explicit operator Matrix4D?(double[,]? values)
         {
-            return new Matrix4D(this);
-        }  
+            if (values == null)
+            {
+                return null;
+            }
+
+            return Create.Matrix4D.ByValues(values);
+        }
+
+        public static Matrix4D? operator -(Matrix4D? matrix4D_1, Matrix4D? matrix4D_2)
+        {
+            if (matrix4D_1 == null || matrix4D_2 == null)
+            {
+                return null;
+            }
+
+            Matrix? matrix = ((Matrix)matrix4D_1) + ((Matrix)matrix4D_2);
+            if (matrix == null)
+            {
+                return null;
+            }
+
+            return Create.Matrix4D.ByMatrix(matrix);
+        }
+
+        public static Matrix4D? operator -(Matrix4D? matrix4D, double value)
+        {
+            if (matrix4D == null)
+            {
+                return null;
+            }
+
+            Matrix? matrix = (Matrix)matrix4D + (-value);
+            if (matrix == null)
+            {
+                return null;
+            }
+
+
+            return Create.Matrix4D.ByMatrix(matrix);
+        }
 
         public static Matrix4D? operator *(Matrix4D? matrix4D_1, Matrix4D? matrix4D_2)
         {
@@ -92,48 +130,9 @@ namespace DiGi.Math.Classes
             return Create.Matrix4D.ByMatrix(matrix);
         }
 
-        public static Matrix4D? operator -(Matrix4D? matrix4D_1, Matrix4D? matrix4D_2)
+        public override ISerializableObject? Clone()
         {
-            if (matrix4D_1 == null || matrix4D_2 == null)
-            {
-                return null;
-            }
-
-            Matrix? matrix = ((Matrix)matrix4D_1) + ((Matrix)matrix4D_2);
-            if (matrix == null)
-            {
-                return null;
-            }
-
-            return Create.Matrix4D.ByMatrix(matrix);
-        }
-
-        public static Matrix4D? operator -(Matrix4D? matrix4D, double value)
-        {
-            if (matrix4D == null)
-            {
-                return null;
-            }
-
-            Matrix? matrix = (Matrix)matrix4D + (-value);
-            if (matrix == null)
-            {
-                return null;
-            }
-
-
-            return Create.Matrix4D.ByMatrix(matrix);
-        }
-
-        
-        public static explicit operator Matrix4D?(double[,]? values)
-        {
-            if(values == null)
-            {
-                return null;
-            }
-
-            return Create.Matrix4D.ByValues(values);
-        }
+            return new Matrix4D(this);
+        }  
     }
 }
