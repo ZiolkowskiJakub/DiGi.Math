@@ -1,12 +1,11 @@
-﻿using DiGi.Math.Interfaces;
+﻿using DiGi.Core.Classes;
+using DiGi.Math.Interfaces;
 using System.Collections.Generic;
-using DiGi.Core.Classes;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 
 namespace DiGi.Math.Classes
 {
-
     /// <summary>
     /// Equation in format y = Ax + B
     /// </summary>
@@ -21,7 +20,6 @@ namespace DiGi.Math.Classes
         public LinearEquation(JsonObject jsonObject)
             : base(jsonObject)
         {
-
         }
 
         public LinearEquation(double a, double b)

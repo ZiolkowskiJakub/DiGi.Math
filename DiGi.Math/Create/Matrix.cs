@@ -57,7 +57,5 @@ namespace DiGi.Math
                 return result;
             }
         }
-
-
     }
 }

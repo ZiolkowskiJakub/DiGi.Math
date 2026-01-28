@@ -28,10 +28,10 @@ namespace DiGi.Math.Classes
         /// </summary>
         [JsonInclude, JsonPropertyName("YArray")]
         private readonly double[]? yArray;
+
         public BilinearInterpolation(JsonObject? jsonObject)
             : base(jsonObject)
         {
-
         }
 
         /// <summary>
@@ -88,7 +88,6 @@ namespace DiGi.Math.Classes
                         }
                     }
                 }
-
             }
         }
 
@@ -97,7 +96,6 @@ namespace DiGi.Math.Classes
         /// </summary>
         public BilinearInterpolation()
         {
-
         }
 
         /// <summary>

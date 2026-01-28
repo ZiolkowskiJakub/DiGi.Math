@@ -2,6 +2,5 @@
 {
     public interface IInterpolation : Core.Interfaces.ISerializableObject
     {
-
     }
 }

@@ -67,7 +67,5 @@
                 return ByMatrix(Matrix.Unset(4, 4))!;
             }
         }
-
-
     }
 }

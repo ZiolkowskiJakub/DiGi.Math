@@ -14,13 +14,11 @@ namespace DiGi.Math.Classes
         public Matrix2D(Matrix2D? matrix2D)
             : base(matrix2D)
         {
-
         }
 
         public Matrix2D()
             : base(2, 2)
         {
-
         }
 
         public static explicit operator Matrix2D?(double[,]? values)

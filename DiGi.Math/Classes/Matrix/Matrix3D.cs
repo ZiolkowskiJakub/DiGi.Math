@@ -14,13 +14,11 @@ namespace DiGi.Math.Classes
         public Matrix3D(Matrix3D? matrix3D)
             : base(matrix3D)
         {
-
         }
 
         public Matrix3D()
             : base(3, 3)
         {
-
         }
 
         public static explicit operator Matrix3D?(double[,]? values)
@@ -61,7 +59,6 @@ namespace DiGi.Math.Classes
             {
                 return null;
             }
-
 
             return Create.Matrix3D.ByMatrix(matrix);
         }
@@ -133,6 +130,6 @@ namespace DiGi.Math.Classes
         public override ISerializableObject? Clone()
         {
             return new Matrix3D(this);
-        }  
+        }
     }
 }

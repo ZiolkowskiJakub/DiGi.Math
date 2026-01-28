@@ -16,9 +16,8 @@ namespace DiGi.Math.Classes
         private List<KeyValuePair<double, double>>? values;
 
         public LinearInterpolation(JsonObject? jsonObject)
-            :base(jsonObject)
+            : base(jsonObject)
         {
-
         }
 
         public LinearInterpolation(double x_1, double y_1, double x_2, double y_2)

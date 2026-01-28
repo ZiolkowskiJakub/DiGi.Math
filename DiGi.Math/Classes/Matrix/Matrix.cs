@@ -34,7 +34,7 @@ namespace DiGi.Math.Classes
 
         public Matrix(double[,]? values)
         {
-            if(values != null)
+            if (values != null)
             {
                 int count_Rows = values.GetLength(0);
                 int count_Columns = values.GetLength(1);
@@ -51,9 +51,8 @@ namespace DiGi.Math.Classes
         }
 
         public Matrix(JsonObject? jsonObject)
-            :base(jsonObject)
+            : base(jsonObject)
         {
-
         }
 
         public Matrix(Matrix? matrix)
@@ -509,7 +508,6 @@ namespace DiGi.Math.Classes
 
                     values_Temp[index_column, index_row] = values[i, j];
                 }
-
             }
 
             return new Matrix(values_Temp);
@@ -540,7 +538,6 @@ namespace DiGi.Math.Classes
                     values_Temp[i, j] = determinant;
                 }
             }
-
 
             return new Matrix(values_Temp);
         }
@@ -739,7 +736,7 @@ namespace DiGi.Math.Classes
 
         public void SetValues(double value)
         {
-            if(values == null)
+            if (values == null)
             {
                 return;
             }
@@ -755,6 +752,7 @@ namespace DiGi.Math.Classes
                 }
             }
         }
+
         public Matrix? Size()
         {
             if (values == null)
@@ -782,7 +780,7 @@ namespace DiGi.Math.Classes
 
         public double[,]? ToArray()
         {
-            if(values == null)
+            if (values == null)
             {
                 return null;
             }
@@ -801,6 +799,7 @@ namespace DiGi.Math.Classes
 
             return result;
         }
+
         public void Transpose()
         {
             if (values == null)

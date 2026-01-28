@@ -14,13 +14,11 @@ namespace DiGi.Math.Classes
         public Matrix4D(Matrix4D? matrix4D)
             : base(matrix4D)
         {
-
         }
 
         public Matrix4D()
             : base(4, 4)
         {
-
         }
 
         public static explicit operator Matrix4D?(double[,]? values)
@@ -61,7 +59,6 @@ namespace DiGi.Math.Classes
             {
                 return null;
             }
-
 
             return Create.Matrix4D.ByMatrix(matrix);
         }
@@ -133,6 +130,6 @@ namespace DiGi.Math.Classes
         public override ISerializableObject? Clone()
         {
             return new Matrix4D(this);
-        }  
+        }
     }
 }

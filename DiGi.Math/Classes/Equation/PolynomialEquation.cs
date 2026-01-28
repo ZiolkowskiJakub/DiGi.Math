@@ -1,14 +1,13 @@
-﻿using DiGi.Math.Interfaces;
+﻿using DiGi.Core.Classes;
+using DiGi.Math.Interfaces;
 using System.Collections.Generic;
-using DiGi.Core.Classes;
+using System.Linq;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace DiGi.Math.Classes
 {
-
     /// <summary>
     /// Represents a polynomial equation of the form a(n)*x^(n) + a(n-1)*x^(n-1) + a(n-2)*x^(n-2) + [...] + a(1)*x + a(0) = 0.
     /// </summary>
@@ -18,10 +17,9 @@ namespace DiGi.Math.Classes
         private readonly double[]? coefficients;
 
         public PolynomialEquation(JsonObject? jsonObject)
-            :base(jsonObject)
+            : base(jsonObject)
         {
         }
-
 
         /// <summary>
         /// Initializes a new instance of the PolynomialEquation class using coefficients.
@@ -124,7 +122,7 @@ namespace DiGi.Math.Classes
         /// <returns>The result of the polynomial equation.</returns>
         public double Evaluate(double value)
         {
-            if(coefficients == null)
+            if (coefficients == null)
             {
                 return double.NaN;
             }
