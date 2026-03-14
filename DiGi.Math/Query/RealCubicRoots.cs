@@ -55,7 +55,7 @@
 
         //Solve ax^3 + bx^2 + cx + d = 0 following
         //Source: http://www.code-kings.com/2013/11/cubic-equation-roots-in-csharp-code.html
-        public static double[]? RealCubicRoots_ThreeRootsOnly(double a, double b, double c, double d, double tolerance = Core.Constants.Tolerance.Distance)
+        public static double[]? RealCubicRoots_ThreeRootsOnly(double a, double b, double c, double d, double tolerance = Core.Constans.Tolerance.Distance)
         {
             double f = (3 * c / a - b * b / (a * a)) / 3;
             double g = (2 * System.Math.Pow(b, 3) / System.Math.Pow(a, 3) - (9 * b * c) / System.Math.Pow(a, 2) + 27 * d / a) / 27;

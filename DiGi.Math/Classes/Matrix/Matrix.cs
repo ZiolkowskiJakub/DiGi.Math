@@ -269,7 +269,7 @@ namespace DiGi.Math.Classes
             return values.GetLength(1);
         }
 
-        public int CountNonZeroRows(double tolerance = Core.Constants.Tolerance.Distance)
+        public int CountNonZeroRows(double tolerance = Core.Constans.Tolerance.Distance)
         {
             // Inspired by BHoM
 
@@ -328,7 +328,7 @@ namespace DiGi.Math.Classes
             return matrix.Determinant();
         }
 
-        public double[]? Eigenvalues(double tolerance = Core.Constants.Tolerance.Distance)
+        public double[]? Eigenvalues(double tolerance = Core.Constans.Tolerance.Distance)
         {
             // Inspired by BHoM
 
@@ -604,7 +604,7 @@ namespace DiGi.Math.Classes
             }
         }
 
-        public double REFTolerance(double tolerance = Core.Constants.Tolerance.Distance)
+        public double REFTolerance(double tolerance = Core.Constans.Tolerance.Distance)
         {
             // Inspired by BHoM
 
@@ -635,7 +635,7 @@ namespace DiGi.Math.Classes
             return result;
         }
 
-        public void Round(double tolerance = Core.Constants.Tolerance.Distance)
+        public void Round(double tolerance = Core.Constans.Tolerance.Distance)
         {
             if (values == null)
             {
@@ -664,7 +664,7 @@ namespace DiGi.Math.Classes
             return values.GetLength(0);
         }
 
-        public Matrix? RowEchelonForm(bool reduced = true, double tolerance = Core.Constants.Tolerance.Distance)
+        public Matrix? RowEchelonForm(bool reduced = true, double tolerance = Core.Constans.Tolerance.Distance)
         {
             // Inspired by BHoM Strongly inspired by https://rosettacode.org/wiki/Reduced_row_echelon_form
 
