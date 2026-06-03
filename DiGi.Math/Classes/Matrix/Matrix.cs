@@ -6,16 +6,28 @@ using System.Text.Json.Serialization;
 
 namespace DiGi.Math.Classes
 {
+/// <summary>
+/// Represents a mathematical matrix with double-precision floating-point elements.
+/// </summary>
     public class Matrix : Core.Classes.SerializableObject, IMatrix
     {
         [JsonInclude, JsonPropertyName("Values")]
         private double[,]? values;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Matrix"/> class with the specified number of rows and columns.
+        /// </summary>
+        /// <param name="rowCount">The number of rows in the matrix.</param>
+        /// <param name="columnCount">The number of columns in the matrix.</param>
         public Matrix(int rowCount, int columnCount)
         {
             values = new double[rowCount, columnCount];
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Matrix"/> class from a 1D array of values.
+        /// </summary>
+        /// <param name="values">An array of values to be used as the first row of the matrix.</param>
         public Matrix(double[]? values)
         {
             if (values == null)
@@ -32,6 +44,10 @@ namespace DiGi.Math.Classes
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Matrix"/> class from a 2D array of values.
+        /// </summary>
+        /// <param name="values">The 2D array containing the matrix elements.</param>
         public Matrix(double[,]? values)
         {
             if (values != null)
@@ -50,11 +66,19 @@ namespace DiGi.Math.Classes
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Matrix"/> class from a JSON object.
+        /// </summary>
+        /// <param name="jsonObject">The JSON object containing matrix data.</param>
         public Matrix(JsonObject? jsonObject)
             : base(jsonObject)
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Matrix"/> class by copying another matrix.
+        /// </summary>
+        /// <param name="matrix">The source matrix to copy.</param>
         public Matrix(Matrix? matrix)
         {
             if (matrix?.values == null)
@@ -75,6 +99,11 @@ namespace DiGi.Math.Classes
             }
         }
 
+        /// <summary>
+        /// Gets or sets the element at the specified row and column.
+        /// </summary>
+        /// <param name="row">The zero-based index of the row.</param>
+        /// <param name="column">The zero-based index of the column.</param>
         [JsonIgnore]
         public double this[int row, int column]
         {
@@ -98,6 +127,9 @@ namespace DiGi.Math.Classes
             }
         }
 
+        /// <summary>
+        /// Explicitly converts a 2D array of doubles to a <see cref="Matrix"/>.
+        /// </summary>
         public static explicit operator Matrix?(double[,]? values)
         {
             if (values == null)
@@ -108,6 +140,9 @@ namespace DiGi.Math.Classes
             return new Matrix(values);
         }
 
+        /// <summary>
+        /// Subtracts one matrix from another.
+        /// </summary>
         public static Matrix? operator -(Matrix? matrix_1, Matrix? matrix_2)
         {
             if (matrix_1?.values == null || matrix_2?.values == null)
@@ -139,11 +174,17 @@ namespace DiGi.Math.Classes
             return result;
         }
 
+        /// <summary>
+        /// Subtracts a scalar value from every element of the matrix.
+        /// </summary>
         public static Matrix? operator -(Matrix? matrix, double value)
         {
             return matrix + (-value);
         }
 
+        /// <summary>
+        /// Multiplies two matrices together.
+        /// </summary>
         public static Matrix? operator *(Matrix? matrix_1, Matrix? matrix_2)
         {
             if (matrix_1 == null || matrix_2 == null)
@@ -178,6 +219,9 @@ namespace DiGi.Math.Classes
             return result;
         }
 
+        /// <summary>
+        /// Multiplies every element of the matrix by a scalar value.
+        /// </summary>
         public static Matrix? operator *(Matrix? matrix, double value)
         {
             if (matrix?.values == null)
@@ -201,6 +245,9 @@ namespace DiGi.Math.Classes
             return new Matrix(values_Temp);
         }
 
+        /// <summary>
+        /// Adds a scalar value to every element of the matrix.
+        /// </summary>
         public static Matrix? operator +(Matrix? matrix, double value)
         {
             if (matrix?.values == null)
@@ -224,6 +271,9 @@ namespace DiGi.Math.Classes
             return new Matrix(values_Temp);
         }
 
+        /// <summary>
+        /// Adds two matrices together.
+        /// </summary>
         public static Matrix? operator +(Matrix? matrix_1, Matrix? matrix_2)
         {
             if (matrix_1?.values == null || matrix_2?.values == null)
@@ -254,11 +304,19 @@ namespace DiGi.Math.Classes
             return result;
         }
 
+        /// <summary>
+        /// Creates a shallow copy of the current matrix.
+        /// </summary>
+        /// <returns>A clone of the current matrix.</returns>
         public override ISerializableObject? Clone()
         {
             return new Matrix((double[,]?)values?.Clone());
         }
 
+        /// <summary>
+        /// Gets the number of columns in the matrix.
+        /// </summary>
+        /// <returns>The column count, or -1 if values are null.</returns>
         public int ColumnCount()
         {
             if (values == null)
@@ -269,6 +327,11 @@ namespace DiGi.Math.Classes
             return values.GetLength(1);
         }
 
+        /// <summary>
+        /// Counts the number of rows that contain at least one non-zero element.
+        /// </summary>
+        /// <param name="tolerance">The tolerance value for determining if an element is non-zero.</param>
+        /// <returns>The count of non-zero rows.</returns>
         public int CountNonZeroRows(double tolerance = Core.Constants.Tolerance.Distance)
         {
             // Inspired by BHoM
@@ -292,6 +355,10 @@ namespace DiGi.Math.Classes
             return count;
         }
 
+        /// <summary>
+        /// Calculates the determinant of the matrix.
+        /// </summary>
+        /// <returns>The determinant value, or NaN if the matrix is not square or values are null.</returns>
         public double Determinant()
         {
             if (values == null || !IsSquare())
@@ -328,6 +395,12 @@ namespace DiGi.Math.Classes
             return matrix.Determinant();
         }
 
+        /// <summary>
+        /// Calculates the eigenvalues of a 3x3 symmetric matrix.
+        /// </summary>
+        /// <param name="tolerance">The tolerance value for symmetry check.</param>
+        /// <returns>An array containing the real eigenvalues, or null if calculation fails.</returns>
+        /// <exception cref="NotImplementedException">Thrown when matrix is not 3x3 or not symmetric.</exception>
         public double[]? Eigenvalues(double tolerance = Core.Constants.Tolerance.Distance)
         {
             // Inspired by BHoM
@@ -366,6 +439,11 @@ namespace DiGi.Math.Classes
             return Query.RealCubicRoots_ThreeRootsOnly(A, B, C, D, tolerance);
         }
 
+        /// <summary>
+        /// Determines whether the specified object is equal to the current matrix.
+        /// </summary>
+        /// <param name="obj">The object to compare with the current matrix.</param>
+        /// <returns>True if the objects are equal; otherwise, false.</returns>
         public override bool Equals(object? obj)
         {
             if (obj is not Matrix matrix)
@@ -405,6 +483,10 @@ namespace DiGi.Math.Classes
             return true;
         }
 
+        /// <summary>
+        /// Generates the matrix of cofactors for the current matrix.
+        /// </summary>
+        /// <returns>The cofactor matrix, or null if values are null.</returns>
         public Matrix? GetCofactorsMatrix()
         {
             if (values == null)
@@ -427,6 +509,10 @@ namespace DiGi.Math.Classes
             return new Matrix(values_Temp);
         }
 
+        /// <summary>
+        /// Gets the hash code for the current matrix.
+        /// </summary>
+        /// <returns>A 32-bit signed integer hash code.</returns>
         public override int GetHashCode()
         {
             if (values == null)
@@ -453,6 +539,10 @@ namespace DiGi.Math.Classes
             return result;
         }
 
+        /// <summary>
+        /// Returns a new matrix that is the inverse of the current matrix.
+        /// </summary>
+        /// <returns>The inversed matrix, or null if the matrix is not square.</returns>
         public Matrix? GetInversed()
         {
             if (!IsSquare())
@@ -465,6 +555,12 @@ namespace DiGi.Math.Classes
             return result;
         }
 
+        /// <summary>
+        /// Gets the minor matrix obtained by removing the specified row and column.
+        /// </summary>
+        /// <param name="row">The index of the row to remove.</param>
+        /// <param name="column">The index of the column to remove.</param>
+        /// <returns>The resulting minor matrix, or null if values are null or dimensions are too small.</returns>
         public Matrix? GetMinorMatrix(int row, int column)
         {
             if (values == null)
@@ -513,6 +609,10 @@ namespace DiGi.Math.Classes
             return new Matrix(values_Temp);
         }
 
+        /// <summary>
+        /// Generates the matrix of minors for the current matrix.
+        /// </summary>
+        /// <returns>The matrix of minors, or null if values are null.</returns>
         public Matrix? GetMinorsMatrix()
         {
             if (values == null)
@@ -542,6 +642,10 @@ namespace DiGi.Math.Classes
             return new Matrix(values_Temp);
         }
 
+        /// <summary>
+        /// Returns a new matrix that is the transpose of the current matrix.
+        /// </summary>
+        /// <returns>The transposed matrix.</returns>
         public Matrix? GetTransposed()
         {
             Matrix? result = Core.Query.Clone(this);
@@ -549,6 +653,9 @@ namespace DiGi.Math.Classes
             return result;
         }
 
+        /// <summary>
+        /// Inverts the current matrix in place.
+        /// </summary>
         public void Inverse()
         {
             if (!IsSquare())
@@ -565,6 +672,10 @@ namespace DiGi.Math.Classes
             values = values_Temp;
         }
 
+        /// <summary>
+        /// Determines whether the current matrix is square.
+        /// </summary>
+        /// <returns>True if the matrix is square; otherwise, false.</returns>
         public bool IsSquare()
         {
             if (values == null)
@@ -575,16 +686,29 @@ namespace DiGi.Math.Classes
             return values.GetLength(0) == values.GetLength(1);
         }
 
+        /// <summary>
+        /// Multiplies the current matrix by another matrix.
+        /// </summary>
+        /// <param name="matrix">The matrix to multiply with.</param>
+        /// <returns>The result of the multiplication, or null if dimensions are incompatible.</returns>
         public Matrix? Multiply(Matrix? matrix)
         {
             return this * matrix;
         }
 
+        /// <summary>
+        /// Multiplies every element of the current matrix by a scalar value.
+        /// </summary>
+        /// <param name="value">The scalar value.</param>
+        /// <returns>The result of the multiplication, or null if values are null.</returns>
         public Matrix? Multiply(double value)
         {
             return this * value;
         }
 
+        /// <summary>
+        /// Negates every element of the current matrix in place.
+        /// </summary>
         public void Negate()
         {
             if (values == null)
@@ -604,6 +728,11 @@ namespace DiGi.Math.Classes
             }
         }
 
+        /// <summary>
+        /// Calculates a tolerance value for Row Echelon Form based on matrix dimensions and maximum row sum.
+        /// </summary>
+        /// <param name="tolerance">The base tolerance value.</param>
+        /// <returns>The calculated REF tolerance.</returns>
         public double REFTolerance(double tolerance = Core.Constants.Tolerance.Distance)
         {
             // Inspired by BHoM
@@ -635,6 +764,10 @@ namespace DiGi.Math.Classes
             return result;
         }
 
+        /// <summary>
+        /// Rounds every element of the current matrix to the specified tolerance in place.
+        /// </summary>
+        /// <param name="tolerance">The precision to round to.</param>
         public void Round(double tolerance = Core.Constants.Tolerance.Distance)
         {
             if (values == null)
@@ -654,6 +787,10 @@ namespace DiGi.Math.Classes
             }
         }
 
+        /// <summary>
+        /// Gets the number of rows in the matrix.
+        /// </summary>
+        /// <returns>The row count, or -1 if values are null.</returns>
         public int RowCount()
         {
             if (values == null)
@@ -664,6 +801,12 @@ namespace DiGi.Math.Classes
             return values.GetLength(0);
         }
 
+        /// <summary>
+        /// Transforms the matrix into row echelon form or reduced row echelon form.
+        /// </summary>
+        /// <param name="reduced">If true, calculates the reduced row echelon form.</param>
+        /// <param name="tolerance">The tolerance for zero detection during elimination.</param>
+        /// <returns>A new matrix in (reduced) row echelon form, or null if cloning fails.</returns>
         public Matrix? RowEchelonForm(bool reduced = true, double tolerance = Core.Constants.Tolerance.Distance)
         {
             // Inspired by BHoM Strongly inspired by https://rosettacode.org/wiki/Reduced_row_echelon_form
@@ -734,6 +877,10 @@ namespace DiGi.Math.Classes
             return matrix;
         }
 
+        /// <summary>
+        /// Sets all elements of the current matrix to a specified value in place.
+        /// </summary>
+        /// <param name="value">The value to set.</param>
         public void SetValues(double value)
         {
             if (values == null)
@@ -753,6 +900,10 @@ namespace DiGi.Math.Classes
             }
         }
 
+        /// <summary>
+        /// Returns a new matrix containing the dimensions of the current matrix.
+        /// </summary>
+        /// <returns>A 1x2 matrix with row and column counts, or null if values are null.</returns>
         public Matrix? Size()
         {
             if (values == null)
@@ -763,6 +914,11 @@ namespace DiGi.Math.Classes
             return new Matrix([values.GetLength(0), values.GetLength(1)]);
         }
 
+        /// <summary>
+        /// Checks if the current matrix has the same dimensions as another matrix.
+        /// </summary>
+        /// <param name="matrix">The other matrix to compare.</param>
+        /// <returns>True if sizes are equal; otherwise, false.</returns>
         public bool SizeEqual(Matrix? matrix)
         {
             if (values == null && matrix?.values == null)
@@ -778,6 +934,10 @@ namespace DiGi.Math.Classes
             return values.GetLength(0) == matrix.values.GetLength(0) && values.GetLength(1) == matrix.values.GetLength(1);
         }
 
+        /// <summary>
+        /// Converts the current matrix to a 2D array of doubles.
+        /// </summary>
+        /// <returns>A copy of the matrix elements as a 2D array, or null if values are null.</returns>
         public double[,]? ToArray()
         {
             if (values == null)
@@ -800,6 +960,9 @@ namespace DiGi.Math.Classes
             return result;
         }
 
+        /// <summary>
+        /// Transposes the current matrix in place.
+        /// </summary>
         public void Transpose()
         {
             if (values == null)

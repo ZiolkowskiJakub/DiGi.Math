@@ -4,6 +4,11 @@
     {
         public static partial class Matrix3D
         {
+            /// <summary>
+            /// Creates a Matrix3D from an existing Matrix object.
+            /// </summary>
+            /// <param name="matrix">The matrix to convert from.</param>
+            /// <returns>A Matrix3D object, or null if the provided matrix is not 3x3.</returns>
             public static Classes.Matrix3D? ByMatrix(Classes.Matrix? matrix)
             {
                 if (matrix == null)
@@ -28,6 +33,11 @@
                 return result;
             }
 
+            /// <summary>
+            /// Creates a Matrix3D from a 2D array of values.
+            /// </summary>
+            /// <param name="values">The values to use for the matrix.</param>
+            /// <returns>A Matrix3D object, or null if the provided values are not 3x3.</returns>
             public static Classes.Matrix3D? ByValues(double[,]? values)
             {
                 if (values == null)
@@ -52,6 +62,10 @@
                 return result;
             }
 
+            /// <summary>
+            /// Creates a 3x3 identity matrix.
+            /// </summary>
+            /// <returns>A Matrix3D representing the identity matrix.</returns>
             public static Classes.Matrix3D Identity()
             {
                 Classes.Matrix3D matrix3D = new();
