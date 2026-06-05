@@ -4,6 +4,14 @@
     {
         //Solve cubic equation: ax^3 + bx^2 + cx + d = 0 according to Cardano.
         //Source: https://www.cs.rit.edu/~ark/pj/lib/edu/rit/numeric/Cubic.shtml
+        /// <summary>
+        /// Solves a cubic equation of the form ax³ + bx² + cx + d = 0 using Cardano's method.
+        /// </summary>
+        /// <param name="a">The coefficient of the x³ term.</param>
+        /// <param name="b">The coefficient of the x² term.</param>
+        /// <param name="c">The coefficient of the x term.</param>
+        /// <param name="d">The constant term.</param>
+        /// <returns>An array containing the real roots of the equation, or null if no real roots are found.</returns>
         public static double[]? RealCubricRoots(double a, double b, double c, double d)
         {
             double two_PI = 2 * System.Math.PI;
@@ -55,6 +63,15 @@
 
         //Solve ax^3 + bx^2 + cx + d = 0 following
         //Source: http://www.code-kings.com/2013/11/cubic-equation-roots-in-csharp-code.html
+        /// <summary>
+        /// Solves a cubic equation ax³ + bx² + cx + d = 0, specifically returning results only when three real roots exist.
+        /// </summary>
+        /// <param name="a">The coefficient of the x³ term.</param>
+        /// <param name="b">The coefficient of the x² term.</param>
+        /// <param name="c">The coefficient of the x term.</param>
+        /// <param name="d">The constant term.</param>
+        /// <param name="tolerance">The tolerance value used for rounding and comparison operations, defaulting to <see cref="Core.Constants.Tolerance.Distance"/>.</param>
+        /// <returns>An array containing the three real roots if they exist; otherwise, null.</returns>
         public static double[]? RealCubicRoots_ThreeRootsOnly(double a, double b, double c, double d, double tolerance = Core.Constants.Tolerance.Distance)
         {
             double f = (3 * c / a - b * b / (a * a)) / 3;

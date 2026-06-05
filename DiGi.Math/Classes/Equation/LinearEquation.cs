@@ -17,17 +17,30 @@ namespace DiGi.Math.Classes
         [JsonInclude, JsonPropertyName("B")]
         private readonly double b;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LinearEquation"/> class using a <see cref="JsonObject"/>.
+        /// </summary>
+        /// <param name="jsonObject">The JSON object containing the equation data.</param>
         public LinearEquation(JsonObject jsonObject)
             : base(jsonObject)
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LinearEquation"/> class with specified coefficients A and B.
+        /// </summary>
+        /// <param name="a">The coefficient A (slope) of the linear equation.</param>
+        /// <param name="b">The coefficient B (y-intercept) of the linear equation.</param>
         public LinearEquation(double a, double b)
         {
             this.a = a;
             this.b = b;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LinearEquation"/> class by copying an existing <see cref="LinearEquation"/> instance.
+        /// </summary>
+        /// <param name="linearEquation">The source equation to copy from.</param>
         public LinearEquation(LinearEquation linearEquation)
         {
             if (linearEquation != null)

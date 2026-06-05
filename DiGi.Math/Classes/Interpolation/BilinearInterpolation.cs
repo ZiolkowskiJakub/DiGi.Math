@@ -29,6 +29,10 @@ namespace DiGi.Math.Classes
         [JsonInclude, JsonPropertyName("YArray")]
         private readonly double[]? yArray;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BilinearInterpolation"/> class using a <see cref="JsonObject"/>.
+        /// </summary>
+        /// <param name="jsonObject">The JSON object containing the data to be deserialized into this instance.</param>
         public BilinearInterpolation(JsonObject? jsonObject)
             : base(jsonObject)
         {

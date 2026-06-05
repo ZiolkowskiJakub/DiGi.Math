@@ -16,6 +16,10 @@ namespace DiGi.Math.Classes
         [JsonInclude, JsonPropertyName("Coefficients")]
         private readonly double[]? coefficients;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PolynomialEquation"/> class using a <see cref="JsonObject"/>.
+        /// </summary>
+        /// <param name="jsonObject">The JSON object containing the polynomial equation data.</param>
         public PolynomialEquation(JsonObject? jsonObject)
             : base(jsonObject)
         {
