@@ -104,6 +104,7 @@ namespace DiGi.Math.Classes
         /// </summary>
         /// <param name="row">The zero-based index of the row.</param>
         /// <param name="column">The zero-based index of the column.</param>
+        /// <returns>The value of the element at the specified position.</returns>
         [JsonIgnore]
         public double this[int row, int column]
         {
@@ -128,8 +129,10 @@ namespace DiGi.Math.Classes
         }
 
         /// <summary>
-        /// Explicitly converts a 2D array of doubles to a <see cref="Matrix"/>.
+        /// Explicitly converts a two-dimensional array of doubles to a <see cref="Matrix"/>.
         /// </summary>
+        /// <param name="values">The two-dimensional array of doubles to convert.</param>
+        /// <returns>A new <see cref="Matrix"/> instance created from the provided values, or <see langword="null"/> if the input array is null.</returns>
         public static explicit operator Matrix?(double[,]? values)
         {
             if (values == null)
@@ -141,8 +144,11 @@ namespace DiGi.Math.Classes
         }
 
         /// <summary>
-        /// Subtracts one matrix from another.
+        /// Subtracts the second matrix from the first matrix element-wise.
         /// </summary>
+        /// <param name="matrix_1">The first matrix to subtract from.</param>
+        /// <param name="matrix_2">The second matrix to be subtracted.</param>
+        /// <returns>A new <see cref="Matrix"/> containing the result of the subtraction, or <see langword="null"/> if either input is null or the matrices have different dimensions.</returns>
         public static Matrix? operator -(Matrix? matrix_1, Matrix? matrix_2)
         {
             if (matrix_1?.values == null || matrix_2?.values == null)
@@ -177,14 +183,20 @@ namespace DiGi.Math.Classes
         /// <summary>
         /// Subtracts a scalar value from every element of the matrix.
         /// </summary>
+        /// <param name="matrix">The matrix to subtract the value from.</param>
+        /// <param name="value">The scalar value to be subtracted from each element.</param>
+        /// <returns>A new <see cref="Matrix"/> representing the result of the subtraction, or <see langword="null"/> if the input matrix is null.</returns>
         public static Matrix? operator -(Matrix? matrix, double value)
         {
             return matrix + (-value);
         }
 
         /// <summary>
-        /// Multiplies two matrices together.
+        /// Multiplies two matrices together using matrix multiplication.
         /// </summary>
+        /// <param name="matrix_1">The first matrix to multiply.</param>
+        /// <param name="matrix_2">The second matrix to multiply.</param>
+        /// <returns>A new <see cref="Matrix"/> representing the product of the two matrices, or <see langword="null"/> if either input is null or if the number of columns in the first matrix does not match the number of rows in the second matrix.</returns>
         public static Matrix? operator *(Matrix? matrix_1, Matrix? matrix_2)
         {
             if (matrix_1 == null || matrix_2 == null)
@@ -222,6 +234,9 @@ namespace DiGi.Math.Classes
         /// <summary>
         /// Multiplies every element of the matrix by a scalar value.
         /// </summary>
+        /// <param name="matrix">The matrix to be multiplied.</param>
+        /// <param name="value">The scalar value to multiply each element by.</param>
+        /// <returns>A new <see cref="Matrix"/> containing the result of the multiplication, or <see langword="null"/> if the input matrix is null.</returns>
         public static Matrix? operator *(Matrix? matrix, double value)
         {
             if (matrix?.values == null)
@@ -248,6 +263,9 @@ namespace DiGi.Math.Classes
         /// <summary>
         /// Adds a scalar value to every element of the matrix.
         /// </summary>
+        /// <param name="matrix">The matrix to which the scalar value will be added.</param>
+        /// <param name="value">The scalar value to add to each element.</param>
+        /// <returns>A new <see cref="Matrix"/> containing the result of the addition, or <see langword="null"/> if the input matrix is null.</returns>
         public static Matrix? operator +(Matrix? matrix, double value)
         {
             if (matrix?.values == null)
@@ -272,8 +290,11 @@ namespace DiGi.Math.Classes
         }
 
         /// <summary>
-        /// Adds two matrices together.
+        /// Adds two matrices together element-wise.
         /// </summary>
+        /// <param name="matrix_1">The first matrix to add.</param>
+        /// <param name="matrix_2">The second matrix to add.</param>
+        /// <returns>A new <see cref="Matrix"/> containing the sum of the two matrices, or <see langword="null"/> if either input is null or if the matrices have different dimensions.</returns>
         public static Matrix? operator +(Matrix? matrix_1, Matrix? matrix_2)
         {
             if (matrix_1?.values == null || matrix_2?.values == null)

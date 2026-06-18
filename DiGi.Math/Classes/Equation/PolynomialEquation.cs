@@ -106,9 +106,10 @@ namespace DiGi.Math.Classes
         }
 
         /// <summary>
-        /// Implicitly converts a LinearEquation to a PolynomialEquation.
+        /// Explicitly converts a <see cref="LinearEquation"/> to a <see cref="PolynomialEquation"/>.
         /// </summary>
-        /// <param name="linearEquation">The LinearEquation to convert.</param>
+        /// <param name="linearEquation">The linear equation to convert.</param>
+        /// <returns>A <see cref="PolynomialEquation"/> instance created from the provided linear equation, or null if the input is null.</returns>
         public static explicit operator PolynomialEquation?(LinearEquation? linearEquation)
         {
             if (linearEquation == null)
