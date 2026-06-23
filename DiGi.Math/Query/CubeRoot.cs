@@ -1,8 +1,8 @@
-﻿namespace DiGi.Math
+namespace DiGi.Math
 {
     public static partial class Query
     {
-        private const double oneThird = 1 / 3;
+        private const double oneThird = 1.0 / 3.0;
 
         // Cube Root
         //https://wiki.unity3d.com/index.php/3d_Math_functions

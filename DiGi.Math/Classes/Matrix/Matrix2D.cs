@@ -1,4 +1,4 @@
-﻿using DiGi.Core.Interfaces;
+using DiGi.Core.Interfaces;
 using DiGi.Math.Interfaces;
 using System.Text.Json.Nodes;
 
@@ -63,7 +63,7 @@ namespace DiGi.Math.Classes
                 return null;
             }
 
-            Matrix? matrix = ((Matrix)matrix2D_1) + ((Matrix)matrix2D_2);
+            Matrix? matrix = ((Matrix)matrix2D_1) - ((Matrix)matrix2D_2);
             if (matrix == null)
             {
                 return null;

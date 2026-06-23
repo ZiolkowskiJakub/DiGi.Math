@@ -1,4 +1,4 @@
-﻿using DiGi.Core.Interfaces;
+using DiGi.Core.Interfaces;
 using DiGi.Math.Interfaces;
 using System;
 using System.Text.Json.Nodes;
@@ -6,9 +6,9 @@ using System.Text.Json.Serialization;
 
 namespace DiGi.Math.Classes
 {
-/// <summary>
-/// Represents a mathematical matrix with double-precision floating-point elements.
-/// </summary>
+    /// <summary>
+    /// Represents a mathematical matrix with double-precision floating-point elements.
+    /// </summary>
     public class Matrix : Core.Classes.SerializableObject, IMatrix
     {
         [JsonInclude, JsonPropertyName("Values")]
@@ -247,7 +247,7 @@ namespace DiGi.Math.Classes
             int count_Rows = matrix.values.GetLength(0);
             int count_Columns = matrix.values.GetLength(1);
 
-            double[,] values_Temp = new double[count_Columns, count_Rows];
+            double[,] values_Temp = new double[count_Rows, count_Columns];
 
             for (int i = 0; i < count_Rows; i++)
             {
@@ -276,7 +276,7 @@ namespace DiGi.Math.Classes
             int count_Rows = matrix.values.GetLength(0);
             int count_Columns = matrix.values.GetLength(1);
 
-            double[,] values_Temp = new double[count_Columns, count_Rows];
+            double[,] values_Temp = new double[count_Rows, count_Columns];
 
             for (int i = 0; i < count_Rows; i++)
             {
@@ -1005,6 +1005,84 @@ namespace DiGi.Math.Classes
             }
 
             values = values_Temp;
+        }
+
+        /// <inheritdoc/>
+        public override JsonObject? ToJsonObject()
+        {
+            JsonObject? jsonObject = base.ToJsonObject();
+            if (jsonObject == null)
+            {
+                return null;
+            }
+
+            if (values != null)
+            {
+                int rows = values.GetLength(0);
+                int cols = values.GetLength(1);
+                JsonArray jsonArray_Rows = [];
+                for (int i = 0; i < rows; i++)
+                {
+                    JsonArray jsonArray_Cols = [];
+                    for (int j = 0; j < cols; j++)
+                    {
+                        jsonArray_Cols.Add(values[i, j]);
+                    }
+                    jsonArray_Rows.Add(jsonArray_Cols);
+                }
+                jsonObject["Values"] = jsonArray_Rows;
+            }
+
+            return jsonObject;
+        }
+
+        /// <inheritdoc/>
+        public override bool FromJsonObject(JsonObject? jsonObject)
+        {
+            if (jsonObject == null)
+            {
+                return false;
+            }
+
+            if (jsonObject.TryGetPropertyValue("Values", out JsonNode? jsonNode_Values) && jsonNode_Values is JsonArray jsonArray_Rows)
+            {
+                int rows = jsonArray_Rows.Count;
+                if (rows > 0 && jsonArray_Rows[0] is JsonArray jsonArray_Cols)
+                {
+                    int cols = jsonArray_Cols.Count;
+                    double[,] values_Temp = new double[rows, cols];
+                    for (int i = 0; i < rows; i++)
+                    {
+                        if (jsonArray_Rows[i] is JsonArray jsonArray_Row)
+                        {
+                            for (int j = 0; j < System.Math.Min(cols, jsonArray_Row.Count); j++)
+                            {
+                                if (jsonArray_Row[j] is JsonValue jsonValue && jsonValue.TryGetValue(out double val))
+                                {
+                                    values_Temp[i, j] = val;
+                                }
+                            }
+                        }
+                    }
+                    values = values_Temp;
+                }
+                else
+                {
+                    values = null;
+                }
+            }
+
+            // Create a copy of the jsonObject and remove "Values" to avoid DiGi.Core trying to deserialize it
+            JsonObject jsonObject_Copy = [];
+            foreach (System.Collections.Generic.KeyValuePair<string, JsonNode?> keyValuePair in jsonObject)
+            {
+                if (keyValuePair.Key != "Values")
+                {
+                    jsonObject_Copy.Add(keyValuePair.Key, keyValuePair.Value?.DeepClone());
+                }
+            }
+
+            return base.FromJsonObject(jsonObject_Copy);
         }
     }
 }
