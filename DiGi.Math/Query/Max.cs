@@ -17,7 +17,7 @@ namespace DiGi.Math
                 return default;
             }
 
-            return values.ToList().Max();
+            return values.Max();
         }
     }
 }

@@ -1,7 +1,6 @@
 using DiGi.Core.Classes;
 using DiGi.Math.Interfaces;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 
@@ -100,10 +99,17 @@ namespace DiGi.Math.Classes
         {
             get
             {
-                if (values == null)
+                if (values == null || values.Count == 0)
                     return double.NaN;
 
-                return values.ConvertAll(x => x.Key).Max();
+                double result = double.NegativeInfinity;
+                foreach (KeyValuePair<double, double> keyValuePair in values)
+                {
+                    if (keyValuePair.Key > result)
+                        result = keyValuePair.Key;
+                }
+
+                return result;
             }
         }
 
@@ -115,10 +121,17 @@ namespace DiGi.Math.Classes
         {
             get
             {
-                if (values == null)
+                if (values == null || values.Count == 0)
                     return double.NaN;
 
-                return values.ConvertAll(x => x.Key).Min();
+                double result = double.PositiveInfinity;
+                foreach (KeyValuePair<double, double> keyValuePair in values)
+                {
+                    if (keyValuePair.Key < result)
+                        result = keyValuePair.Key;
+                }
+
+                return result;
             }
         }
 
@@ -226,7 +239,30 @@ namespace DiGi.Math.Classes
         /// <returns>True if the value is within the inclusive range [MinX, MaxX]; otherwise, false.</returns>
         public bool InRange(double x)
         {
-            return x >= MinX && x <= MaxX;
+            if (values == null || values.Count == 0 || double.IsNaN(x))
+            {
+                return false;
+            }
+
+            // Single pass for both bounds, avoiding the two list allocations and two scans
+            // that calling MinX and MaxX separately would incur on every interpolation.
+            double min = double.PositiveInfinity;
+            double max = double.NegativeInfinity;
+            foreach (KeyValuePair<double, double> keyValuePair in values)
+            {
+                double key = keyValuePair.Key;
+                if (key < min)
+                {
+                    min = key;
+                }
+
+                if (key > max)
+                {
+                    max = key;
+                }
+            }
+
+            return x >= min && x <= max;
         }
     }
 }

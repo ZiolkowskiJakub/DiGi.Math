@@ -1,7 +1,6 @@
 ﻿using DiGi.Math.Classes;
 using MathNet.Numerics;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace DiGi.Math
 {
@@ -21,24 +20,19 @@ namespace DiGi.Math
                 return null;
             }
 
-            int count = x.Count();
-            if (count == 0 || y.Count() != count)
+            // Materialize each sequence once instead of re-enumerating it for every Count() call.
+            double[] doubles_X = [.. x];
+            double[] doubles_Y = [.. y];
+
+            int count = doubles_X.Length;
+            if (count <= 1 || doubles_Y.Length != count)
             {
                 return null;
             }
 
-            if (x.Count() == 1)
-            {
-                return null;
-            }
+            int order_Temp = order == -1 ? count - 1 : order;
 
-            int order_Temp = order;
-            if (order_Temp == -1)
-            {
-                order_Temp = count - 1;
-            }
-
-            Polynomial polynomial = Polynomial.Fit([.. x], [.. y], order_Temp, MathNet.Numerics.LinearRegression.DirectRegressionMethod.NormalEquations);
+            Polynomial polynomial = Polynomial.Fit(doubles_X, doubles_Y, order_Temp, MathNet.Numerics.LinearRegression.DirectRegressionMethod.NormalEquations);
             return polynomial?.ToDiGi();
         }
     }

@@ -74,20 +74,28 @@
         /// <returns>An array containing the three real roots if they exist; otherwise, null.</returns>
         public static double[]? RealCubicRoots_ThreeRootsOnly(double a, double b, double c, double d, double tolerance = Core.Constants.Tolerance.Distance)
         {
-            double f = (3 * c / a - b * b / (a * a)) / 3;
-            double g = (2 * System.Math.Pow(b, 3) / System.Math.Pow(a, 3) - (9 * b * c) / System.Math.Pow(a, 2) + 27 * d / a) / 27;
-            double h = Core.Query.Round(System.Math.Pow(g, 2) * 0.25 + System.Math.Pow(f, 3) / 27, tolerance);
+            // Direct multiplication instead of System.Math.Pow for small integer powers
+            // (Pow routes through exp/log); reuse of repeated subexpressions.
+            double a2 = a * a;
+            double a3 = a2 * a;
+            double b2 = b * b;
+            double b3 = b2 * b;
+
+            double f = ((3 * c / a) - (b2 / a2)) / 3;
+            double g = (((2 * b3) / a3) - ((9 * b * c) / a2) + (27 * d / a)) / 27;
+            double g2_Quarter = g * g * 0.25;
+            double h = Core.Query.Round(g2_Quarter + ((f * f * f) / 27), tolerance);
 
             if (h <= 0)
             {
-                double i = System.Math.Pow(System.Math.Pow(g, 2) * 0.25 - h, 0.5);
-                double j = CubeRoot(i);//System.Math.Pow(i, 0.333333333333333333333333);
+                double i = System.Math.Sqrt(g2_Quarter - h);
+                double j = CubeRoot(i);
                 double k = System.Math.Acos(-g / (2 * i));
                 double l = -j;
                 double m = System.Math.Cos(k / 3);
-                double n = System.Math.Pow(3, 0.5) * System.Math.Sin(k / 3);
+                double n = System.Math.Sqrt(3) * System.Math.Sin(k / 3);
                 double p = -b / (3 * a);
-                double x = 2 * j * System.Math.Cos(k / 3) - b / (3 * a);
+                double x = (2 * j * m) + p;
                 double y = l * (m + n) + p;
                 double z = l * (m - n) + p;
                 return [x, y, z];

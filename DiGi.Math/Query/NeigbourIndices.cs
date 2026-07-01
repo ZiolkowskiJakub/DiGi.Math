@@ -26,27 +26,35 @@
                 return;
             }
 
-            if (value >= values[values.Length - 1])
+            int lastIndex = values.Length - 1;
+            if (value >= values[lastIndex])
             {
-                lowerIndex = values.Length - 1;
-                upperIndex = values.Length - 1;
+                lowerIndex = lastIndex;
+                upperIndex = lastIndex;
                 return;
             }
 
-            for (int i = 1; i < values.Length; i++)
+            // Binary search for the first index whose value is strictly greater than 'value'
+            // (the upper neighbour). Values must be sorted ascending, as documented above.
+            // This replaces the previous O(n) linear scan with an O(log n) search while
+            // preserving the exact bracketing semantics, including for repeated values.
+            int low = 0;
+            int high = values.Length;
+            while (low < high)
             {
-                if (value < values[i])
+                int mid = low + ((high - low) / 2);
+                if (values[mid] > value)
                 {
-                    lowerIndex = i - 1;
-                    upperIndex = i;
-                    return;
+                    high = mid;
                 }
-                else if (value == values[i])
+                else
                 {
-                    lowerIndex = i;
-                    upperIndex = i;
+                    low = mid + 1;
                 }
             }
+
+            upperIndex = low;
+            lowerIndex = low - 1;
         }
     }
 }

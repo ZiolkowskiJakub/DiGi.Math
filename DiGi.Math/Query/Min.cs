@@ -17,7 +17,7 @@ namespace DiGi.Math
                 return default;
             }
 
-            return values.ToList().Min();
+            return values.Min();
         }
     }
 }

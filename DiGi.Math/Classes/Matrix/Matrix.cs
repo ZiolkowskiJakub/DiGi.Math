@@ -199,32 +199,43 @@ namespace DiGi.Math.Classes
         /// <returns>A new <see cref="Matrix"/> representing the product of the two matrices, or <see langword="null"/> if either input is null or if the number of columns in the first matrix does not match the number of rows in the second matrix.</returns>
         public static Matrix? operator *(Matrix? matrix_1, Matrix? matrix_2)
         {
-            if (matrix_1 == null || matrix_2 == null)
+            if (matrix_1?.values == null || matrix_2?.values == null)
             {
                 return null;
             }
 
-            int columnCount_1 = matrix_1.ColumnCount();
+            // Work directly against the backing arrays so the inner loop avoids the per-element
+            // null check and bounds re-validation of the public indexer (an O(n^3) overhead).
+            double[,] values_1 = matrix_1.values;
+            double[,] values_2 = matrix_2.values;
 
-            if (columnCount_1 != matrix_2.RowCount())
+            int columnCount_1 = values_1.GetLength(1);
+            if (columnCount_1 != values_2.GetLength(0))
             {
                 return null;
             }
 
-            int rowCount_1 = matrix_1.RowCount();
-
-            int columnCount_2 = matrix_2.ColumnCount();
+            int rowCount_1 = values_1.GetLength(0);
+            int columnCount_2 = values_2.GetLength(1);
 
             Matrix result = new(rowCount_1, columnCount_2);
+            double[,]? values_Result = result.values;
+            if (values_Result == null)
+            {
+                return result;
+            }
+
             for (int i = 0; i < rowCount_1; i++)
             {
                 for (int j = 0; j < columnCount_2; j++)
                 {
-                    result[i, j] = 0;
+                    double sum = 0;
                     for (int k = 0; k < columnCount_1; k++)
                     {
-                        result[i, j] += matrix_1[i, k] * matrix_2[k, j];
+                        sum += values_1[i, k] * values_2[k, j];
                     }
+
+                    values_Result[i, j] = sum;
                 }
             }
 
@@ -505,25 +516,38 @@ namespace DiGi.Math.Classes
         }
 
         /// <summary>
-        /// Generates the matrix of cofactors for the current matrix.
+        /// Generates the matrix of cofactors for the current matrix, where each element is the signed minor determinant (-1)^(row+column) multiplied by the determinant of the corresponding minor matrix.
         /// </summary>
-        /// <returns>The cofactor matrix, or null if values are null.</returns>
+        /// <returns>The cofactor matrix, or null if values are null or the matrix is not square.</returns>
         public Matrix? GetCofactorsMatrix()
         {
-            if (values == null)
+            if (values == null || !IsSquare())
             {
                 return null;
             }
 
-            int count_Rows = values.GetLength(0);
-            int count_Columns = values.GetLength(1);
+            int count = values.GetLength(0);
 
-            double[,] values_Temp = new double[count_Rows, count_Columns];
-            for (int i = 0; i < count_Rows; i++)
+            // The cofactor of the single element of a 1x1 matrix is 1 (its minor is the empty
+            // determinant, which is 1 by convention).
+            if (count == 1)
             {
-                for (int j = 0; j < count_Columns; j++)
+                return new Matrix(new double[,] { { Query.MatrixCofactor(0, 0) } });
+            }
+
+            double[,] values_Temp = new double[count, count];
+            for (int i = 0; i < count; i++)
+            {
+                for (int j = 0; j < count; j++)
                 {
-                    values_Temp[i, j] = Query.MatrixCofactor(i, j);
+                    double minorDeterminant = double.NaN;
+                    Matrix? matrix_Minor = GetMinorMatrix(i, j);
+                    if (matrix_Minor != null)
+                    {
+                        minorDeterminant = matrix_Minor.Determinant();
+                    }
+
+                    values_Temp[i, j] = Query.MatrixCofactor(i, j) * minorDeterminant;
                 }
             }
 
@@ -571,9 +595,15 @@ namespace DiGi.Math.Classes
                 return null;
             }
 
-            Matrix? result = Core.Query.Clone(this);
-            result?.Inverse();
-            return result;
+            // Invert via a single MathNet conversion instead of cloning first and then converting
+            // again inside Inverse() (the clone was redundant since Inverse() replaces all values).
+            double[,]? values_Inversed = this.ToMathNet()?.Inverse()?.ToArray();
+            if (values_Inversed == null)
+            {
+                return null;
+            }
+
+            return new Matrix(values_Inversed);
         }
 
         /// <summary>

@@ -13,6 +13,8 @@ namespace DiGi.Math
         /// <returns>The cube root of the specified value.</returns>
         public static double CubeRoot(double value)
         {
+            // System.Math.Cbrt would be preferable, but it is unavailable on this project's
+            // netstandard2.0 target, so Pow with explicit sign handling is used for negatives.
             if (value < 0)
                 return -System.Math.Pow(-value, oneThird);
 

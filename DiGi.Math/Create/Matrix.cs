@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace DiGi.Math
 {
@@ -14,7 +13,9 @@ namespace DiGi.Math
             /// <returns>An identity matrix of size count x count.</returns>
             public static Classes.Matrix Identity(int count = 3)
             {
-                Classes.Matrix matrix = new(new double[count, count]);
+                // The (rowCount, columnCount) constructor allocates the zero-filled backing array
+                // directly; passing a new double[count, count] would make the constructor copy it.
+                Classes.Matrix matrix = new(count, count);
                 for (int i = 0; i < count; i++)
                 {
                     matrix[i, i] = 1;
@@ -35,13 +36,14 @@ namespace DiGi.Math
                     return null;
                 }
 
-                int count = values.Count();
+                double[] doubles = [.. values];
+                int count = doubles.Length;
 
                 Classes.Matrix matrix = Identity(count + 1);
 
                 for (int i = 0; i < count; i++)
                 {
-                    matrix[i, i] = values.ElementAt(i);
+                    matrix[i, i] = doubles[i];
                 }
 
                 return matrix;

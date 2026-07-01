@@ -1,7 +1,6 @@
 ﻿using DiGi.Core.Classes;
 using DiGi.Math.Interfaces;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -36,13 +35,7 @@ namespace DiGi.Math.Classes
                 return;
             }
 
-            int count = coefficients.Count();
-
-            this.coefficients = new double[count];
-            for (int i = 0; i < count; i++)
-            {
-                this.coefficients[i] = coefficients.ElementAt(i);
-            }
+            this.coefficients = [.. coefficients];
         }
 
         /// <summary>
@@ -78,13 +71,7 @@ namespace DiGi.Math.Classes
                     return null;
                 }
 
-                List<double> result = [];
-                foreach (double variable in coefficients)
-                {
-                    result.Add(variable);
-                }
-
-                return result;
+                return [.. coefficients];
             }
         }
 
@@ -127,20 +114,19 @@ namespace DiGi.Math.Classes
         /// <returns>The result of the polynomial equation.</returns>
         public double Evaluate(double value)
         {
-            if (coefficients == null)
+            if (coefficients == null || coefficients.Length == 0)
             {
                 return double.NaN;
             }
 
+            // Horner's method: avoids one System.Math.Pow per term (O(degree) multiply-adds),
+            // which is both faster and numerically more stable than summing value^i terms.
             int count = coefficients.Length;
-
-            double result = 0;
-            for (int i = 1; i < count; i++)
+            double result = coefficients[count - 1];
+            for (int i = count - 2; i >= 0; i--)
             {
-                result += System.Math.Pow(value, i) * coefficients[i];
+                result = (result * value) + coefficients[i];
             }
-
-            result += coefficients[0];
 
             return result;
         }
@@ -157,29 +143,30 @@ namespace DiGi.Math.Classes
                 return null;
             }
 
-            List<double>? result = null;
+            // Materialize once so the parallel branch uses O(1) indexing instead of
+            // re-enumerating the source per element (the previous ElementAt usage was O(n^2)
+            // and re-enumerated a shared IEnumerable concurrently across threads).
+            IList<double> valueList = values as IList<double> ?? [.. values];
+            int count = valueList.Count;
 
-            int count = coefficients.Length;
-            if (count < 5 || values.Count() < 1000)
+            if (coefficients.Length < 5 || count < 1000)
             {
-                result = [];
-                foreach (double value in values)
+                List<double> result = new(count);
+                for (int i = 0; i < count; i++)
                 {
-                    result.Add(Evaluate(value));
+                    result.Add(Evaluate(valueList[i]));
                 }
+
+                return result;
             }
-            else
+
+            double[] values_Result = new double[count];
+            Parallel.For(0, count, i =>
             {
-                count = values.Count();
+                values_Result[i] = Evaluate(valueList[i]);
+            });
 
-                result = [.. Enumerable.Repeat(double.NaN, count)];
-                Parallel.For(0, count, i =>
-                {
-                    result[i] = Evaluate(values.ElementAt(i));
-                });
-            }
-
-            return result;
+            return [.. values_Result];
         }
     }
 }
