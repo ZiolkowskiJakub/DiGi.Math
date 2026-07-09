@@ -1,4 +1,4 @@
-#### [DiGi\.Math](index.md 'index')
+#### [DiGi\.Math](DiGi.Math.Overview.md 'DiGi\.Math\.Overview')
 
 ## DiGi\.Math Namespace
 ### Classes
